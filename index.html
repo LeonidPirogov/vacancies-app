@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Вакансии</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  :root {
+    --bg: var(--tg-theme-bg-color, #f7f6f3);
+    --bg2: var(--tg-theme-secondary-bg-color, #ffffff);
+    --text: var(--tg-theme-text-color, #1a1a1a);
+    --hint: var(--tg-theme-hint-color, #888888);
+    --accent: var(--tg-theme-button-color, #1a1a1a);
+    --accent-text: var(--tg-theme-button-text-color, #ffffff);
+    --border: rgba(0,0,0,0.08);
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  body {
+    font-family: 'DM Sans', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    font-size: 15px;
+  }
+
+  /* Header */
+  .header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 16px;
+    padding-top: calc(12px + var(--safe-top));
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-icon {
+    width: 32px; height: 32px;
+    background: var(--accent);
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+  }
+  .logo-text { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 17px; color: var(--text); }
+
+  /* Add button */
+  .btn-add {
+    background: var(--accent);
+    color: var(--accent-text);
+    border: none;
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    display: flex; align-items: center; gap: 5px;
+    cursor: pointer;
+    transition: opacity .15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn-add:active { opacity: .75; }
+
+  /* Scroll container */
+  .scroll-area {
+    padding: 14px 16px;
+    padding-bottom: calc(80px + var(--safe-bottom));
+  }
+
+  /* Stats */
+  .stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .stat-card {
+    border-radius: 14px;
+    padding: 14px 16px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+  }
+  .stat-value {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 26px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .stat-label {
+    font-size: 12px;
+    color: var(--hint);
+    font-weight: 500;
+  }
+
+  /* Search */
+  .search-wrap { position: relative; margin-bottom: 12px; }
+  .search-input {
+    width: 100%;
+    padding: 10px 14px 10px 38px;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    font-size: 14px;
+    font-family: inherit;
+    background: var(--bg2);
+    color: var(--text);
+    outline: none;
+    -webkit-appearance: none;
+  }
+  .search-input:focus { border-color: var(--accent); }
+  .search-icon {
+    position: absolute; left: 12px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px; opacity: .4;
+    pointer-events: none;
+  }
+
+  /* Filters */
+  .filters-scroll {
+    display: flex; gap: 7px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    margin-bottom: 14px;
+    scrollbar-width: none;
+  }
+  .filters-scroll::-webkit-scrollbar { display: none; }
+  .filter-pill {
+    flex-shrink: 0;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1.5px solid var(--border);
+    font-size: 13px;
+    font-weight: 500;
+    background: var(--bg2);
+    color: var(--hint);
+    cursor: pointer;
+    font-family: inherit;
+    transition: all .15s;
+  }
+  .filter-pill.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-text);
+  }
+
+  /* Cards */
+  .vacancy-card {
+    background: var(--bg2);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: transform .1s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .vacancy-card:active { transform: scale(0.985); }
+
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
+  .card-title { font-weight: 600; font-size: 15px; line-height: 1.3; flex: 1; }
+  .card-meta { font-size: 13px; color: var(--hint); margin-bottom: 8px; }
+  .card-footer { display: flex; align-items: center; justify-content: space-between; }
+  .card-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+
+  /* Chips */
+  .chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .chip-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+
+  .cand-info { font-size: 12px; color: var(--hint); display: flex; align-items: center; gap: 4px; }
+
+  /* No results */
+  .empty { text-align: center; color: var(--hint); font-size: 14px; padding: 40px 20px; }
+
+  /* Bottom sheet */
+  .sheet-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s;
+  }
+  .sheet-overlay.open { opacity: 1; pointer-events: all; }
+
+  .sheet {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--bg2);
+    border-radius: 20px 20px 0 0;
+    padding: 0 16px calc(24px + var(--safe-bottom));
+    z-index: 101;
+    transform: translateY(100%);
+    transition: transform .3s cubic-bezier(.4,0,.2,1);
+    max-height: 92vh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .sheet.open { transform: translateY(0); }
+
+  .sheet-handle {
+    width: 36px; height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin: 12px auto 20px;
+  }
+  .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .sheet-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; }
+  .sheet-close {
+    background: none; border: none;
+    font-size: 22px; color: var(--hint);
+    line-height: 1; cursor: pointer;
+    padding: 4px; font-family: inherit;
+  }
+
+  /* Form */
+  .form-field { margin-bottom: 14px; }
+  .form-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--hint);
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    margin-bottom: 6px;
+    display: block;
+  }
+  .form-input {
+    width: 100%;
+    padding: 10px 13px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: inherit;
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    transition: border-color .15s;
+  }
+  .form-input:focus { border-color: var(--accent); background: var(--bg2); }
+  textarea.form-input { resize: none; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  /* Sheet buttons */
+  .sheet-actions { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; }
+  .btn-save {
+    background: var(--accent);
+    color: var(--accent-text);
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: opacity .15s;
+  }
+  .btn-save:active { opacity: .8; }
+  .btn-cancel {
+    background: transparent;
+    color: var(--hint);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 13px;
+    font-size: 15px;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .btn-delete {
+    background: #fdecea;
+    color: #c62828;
+    border: none;
+    border-radius: 12px;
+    padding: 13px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+  }
+
+  /* Detail sheet */
+  .detail-row { padding: 10px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .detail-row:last-child { border-bottom: none; }
+  .detail-key { font-size: 13px; color: var(--hint); }
+  .detail-val { font-size: 14px; font-weight: 500; text-align: right; max-width: 60%; }
+  .detail-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; margin-bottom: 4px; }
+  .detail-dept { color: var(--hint); font-size: 14px; margin-bottom: 16px; }
+  .detail-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-icon">💼</div>
+    <span class="logo-text">Вакансии</span>
+  </div>
+  <button class="btn-add" onclick="openAdd()">+ Добавить</button>
+</div>
+
+<div class="scroll-area">
+  <div class="stats" id="stats"></div>
+
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input class="search-input" type="text" id="search" placeholder="Поиск по названию или городу…" oninput="renderCards()">
+  </div>
+
+  <div class="filters-scroll" id="status-filters"></div>
+
+  <div id="cards-list"></div>
+</div>
+
+<!-- Bottom sheet overlay -->
+<div class="sheet-overlay" id="overlay" onclick="closeAll()"></div>
+
+<!-- Form sheet -->
+<div class="sheet" id="form-sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <span class="sheet-title" id="form-title">Новая вакансия</span>
+    <button class="sheet-close" onclick="closeAll()">×</button>
+  </div>
+
+  <div class="form-field">
+    <label class="form-label">Должность *</label>
+    <input class="form-input" id="f-title" placeholder="Менеджер по продажам">
+  </div>
+  <div class="form-row">
+    <div class="form-field">
+      <label class="form-label">Отдел</label>
+      <select class="form-input" id="f-dept">
+        <option>IT</option><option>Продажи</option><option>Финансы</option>
+        <option>HR</option><option>Логистика</option><option>Маркетинг</option><option>Другое</option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label class="form-label">Город</label>
+      <input class="form-input" id="f-city" placeholder="Москва">
+    </div>
+  </div>
+  <div class="form-field">
+    <label class="form-label">Зарплата</label>
+    <input class="form-input" id="f-salary" placeholder="80 000 – 120 000 ₽">
+  </div>
+  <div class="form-row">
+    <div class="form-field">
+      <label class="form-label">Статус</label>
+      <select class="form-input" id="f-status">
+        <option>Открыта</option><option>В работе</option><option>Закрыта</option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label class="form-label">Приоритет</label>
+      <select class="form-input" id="f-priority">
+        <option>Высокий</option><option>Средний</option><option>Низкий</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-field">
+      <label class="form-label">Кандидатов</label>
+      <input class="form-input" id="f-candidates" type="number" min="0" value="0">
+    </div>
+    <div class="form-field">
+      <label class="form-label">Дедлайн</label>
+      <input class="form-input" id="f-deadline" type="date">
+    </div>
+  </div>
+  <div class="form-field">
+    <label class="form-label">Заметки</label>
+    <textarea class="form-input" id="f-notes" rows="3" placeholder="Требования, комментарии…"></textarea>
+  </div>
+
+  <div class="sheet-actions">
+    <button class="btn-save" id="form-save-btn" onclick="saveForm()">Добавить</button>
+    <div id="form-delete-slot"></div>
+    <button class="btn-cancel" onclick="closeAll()">Отмена</button>
+  </div>
+</div>
+
+<!-- Detail sheet -->
+<div class="sheet" id="detail-sheet">
+  <div class="sheet-handle"></div>
+  <div id="detail-content"></div>
+  <div class="sheet-actions">
+    <button class="btn-save" id="detail-edit-btn">Редактировать</button>
+    <button class="btn-cancel" onclick="closeAll()">Закрыть</button>
+  </div>
+</div>
+
+<script>
+const tg = window.Telegram?.WebApp;
+if (tg) { tg.ready(); tg.expand(); }
+
+const STATUS_COLORS = {
+  "Открыта":  { bg: "#e8f5e9", text: "#2e7d32", dot: "#43a047" },
+  "В работе": { bg: "#fff8e1", text: "#f57f17", dot: "#ffa000" },
+  "Закрыта":  { bg: "#f3f3f3", text: "#757575", dot: "#9e9e9e" },
+};
+const PRIORITY_COLORS = {
+  "Высокий": { bg: "#fdecea", text: "#c62828" },
+  "Средний": { bg: "#fff3e0", text: "#e65100" },
+  "Низкий":  { bg: "#e8eaf6", text: "#283593" },
+};
+const STATUSES = ["Все", "Открыта", "В работе", "Закрыта"];
+
+const DEFAULT_DATA = [
+  { id: 1, title: "Менеджер по продажам", department: "Продажи", city: "Москва", salary: "80 000 – 120 000 ₽", status: "Открыта", priority: "Высокий", deadline: "2026-06-15", candidates: 3, notes: "Нужен опыт в B2B" },
+  { id: 2, title: "Frontend-разработчик", department: "IT", city: "Удалённо", salary: "150 000 – 200 000 ₽", status: "В работе", priority: "Высокий", deadline: "2026-06-30", candidates: 7, notes: "React, TypeScript" },
+  { id: 3, title: "Бухгалтер", department: "Финансы", city: "Санкт-Петербург", salary: "70 000 – 90 000 ₽", status: "Открыта", priority: "Средний", deadline: "2026-07-10", candidates: 1, notes: "" },
+  { id: 4, title: "HR-generalist", department: "HR", city: "Москва", salary: "90 000 – 110 000 ₽", status: "Закрыта", priority: "Низкий", deadline: "2026-05-01", candidates: 12, notes: "Закрыто, взяли Анну К." },
+  { id: 5, title: "Водитель-экспедитор", department: "Логистика", city: "Москва", salary: "60 000 – 75 000 ₽", status: "В работе", priority: "Средний", deadline: "2026-06-20", candidates: 4, notes: "Категория B, C" },
+  { id: 6, title: "Маркетолог", department: "Маркетинг", city: "Удалённо", salary: "100 000 – 140 000 ₽", status: "Открыта", priority: "Высокий", deadline: "2026-07-01", candidates: 0, notes: "Digital-маркетинг" },
+];
+
+let vacancies = JSON.parse(localStorage.getItem('hr_vac') || 'null') || DEFAULT_DATA;
+let filterStatus = "Все";
+let editingId = null;
+let viewingId = null;
+
+function save() { localStorage.setItem('hr_vac', JSON.stringify(vacancies)); }
+
+function getFiltered() {
+  const q = document.getElementById('search').value.toLowerCase();
+  return vacancies.filter(v => {
+    if (filterStatus !== "Все" && v.status !== filterStatus) return false;
+    if (q && !v.title.toLowerCase().includes(q) && !v.city.toLowerCase().includes(q)) return false;
+    return true;
+  });
+}
+
+function formatDate(d) {
+  if (!d) return "—";
+  const dt = new Date(d + 'T00:00:00');
+  return dt.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
+}
+
+function renderStats() {
+  const total = vacancies.length;
+  const open = vacancies.filter(v => v.status === "Открыта").length;
+  const inprog = vacancies.filter(v => v.status === "В работе").length;
+  const closed = vacancies.filter(v => v.status === "Закрыта").length;
+  const cards = [
+    { label: "Всего вакансий", value: total, color: "#1a1a1a" },
+    { label: "Открыто", value: open, color: "#2e7d32", bg: "#e8f5e9" },
+    { label: "В работе", value: inprog, color: "#e65100", bg: "#fff8e1" },
+    { label: "Закрыто", value: closed, color: "#757575", bg: "#f3f3f3" },
+  ];
+  document.getElementById('stats').innerHTML = cards.map(c =>
+    `<div class="stat-card" ${c.bg ? `style="background:${c.bg}"` : ''}>
+      <div class="stat-value" style="color:${c.color}">${c.value}</div>
+      <div class="stat-label">${c.label}</div>
+    </div>`
+  ).join('');
+}
+
+function renderFilters() {
+  document.getElementById('status-filters').innerHTML = STATUSES.map(s =>
+    `<button class="filter-pill${filterStatus === s ? ' active' : ''}" onclick="setFilter('${s}')">${s}</button>`
+  ).join('');
+}
+
+function setFilter(s) { filterStatus = s; renderCards(); renderFilters(); }
+
+function renderCards() {
+  const data = getFiltered();
+  renderStats();
+  if (data.length === 0) {
+    document.getElementById('cards-list').innerHTML = '<div class="empty">Вакансии не найдены</div>';
+    return;
+  }
+  document.getElementById('cards-list').innerHTML = data.map(v => {
+    const sc = STATUS_COLORS[v.status];
+    const pc = PRIORITY_COLORS[v.priority];
+    return `<div class="vacancy-card" onclick="openDetail(${v.id})">
+      <div class="card-top">
+        <div class="card-title">${v.title}</div>
+        <span class="chip" style="background:${sc.bg};color:${sc.text};flex-shrink:0">
+          <span class="chip-dot" style="background:${sc.dot}"></span>${v.status}
+        </span>
+      </div>
+      <div class="card-meta">${v.department} · ${v.city}${v.salary ? ' · ' + v.salary : ''}</div>
+      <div class="card-footer">
+        <div class="card-chips">
+          <span class="chip" style="background:${pc.bg};color:${pc.text}">${v.priority}</span>
+          ${v.deadline ? `<span class="chip" style="background:#f0eeeb;color:#555">${formatDate(v.deadline)}</span>` : ''}
+        </div>
+        ${v.candidates > 0 ? `<div class="cand-info">👤 ${v.candidates}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openSheet(id) {
+  document.getElementById('overlay').classList.add('open');
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+  if (tg) tg.BackButton.show();
+}
+
+function closeAll() {
+  document.getElementById('overlay').classList.remove('open');
+  document.getElementById('form-sheet').classList.remove('open');
+  document.getElementById('detail-sheet').classList.remove('open');
+  document.body.style.overflow = '';
+  editingId = null;
+  viewingId = null;
+  if (tg) tg.BackButton.hide();
+}
+
+if (tg) {
+  tg.BackButton.onClick(() => closeAll());
+}
+
+function openDetail(id) {
+  const v = vacancies.find(x => x.id === id);
+  if (!v) return;
+  viewingId = id;
+  const sc = STATUS_COLORS[v.status];
+  const pc = PRIORITY_COLORS[v.priority];
+  document.getElementById('detail-content').innerHTML = `
+    <div class="detail-title">${v.title}</div>
+    <div class="detail-dept">${v.department} · ${v.city}</div>
+    <div class="detail-chips">
+      <span class="chip" style="background:${sc.bg};color:${sc.text}">
+        <span class="chip-dot" style="background:${sc.dot}"></span>${v.status}
+      </span>
+      <span class="chip" style="background:${pc.bg};color:${pc.text}">${v.priority}</span>
+    </div>
+    <div>
+      ${v.salary ? `<div class="detail-row"><span class="detail-key">Зарплата</span><span class="detail-val">${v.salary}</span></div>` : ''}
+      <div class="detail-row"><span class="detail-key">Дедлайн</span><span class="detail-val">${formatDate(v.deadline)}</span></div>
+      <div class="detail-row"><span class="detail-key">Кандидаты</span><span class="detail-val">${v.candidates}</span></div>
+      ${v.notes ? `<div class="detail-row"><span class="detail-key">Заметки</span><span class="detail-val">${v.notes}</span></div>` : ''}
+    </div>
+  `;
+  document.getElementById('detail-edit-btn').onclick = () => { closeAll(); setTimeout(() => openEdit(id), 50); };
+  openSheet('detail-sheet');
+}
+
+function openAdd() {
+  editingId = null;
+  document.getElementById('form-title').textContent = 'Новая вакансия';
+  document.getElementById('form-save-btn').textContent = 'Добавить';
+  document.getElementById('form-delete-slot').innerHTML = '';
+  document.getElementById('f-title').value = '';
+  document.getElementById('f-dept').value = 'IT';
+  document.getElementById('f-city').value = '';
+  document.getElementById('f-salary').value = '';
+  document.getElementById('f-status').value = 'Открыта';
+  document.getElementById('f-priority').value = 'Средний';
+  document.getElementById('f-candidates').value = '0';
+  document.getElementById('f-deadline').value = '';
+  document.getElementById('f-notes').value = '';
+  openSheet('form-sheet');
+  setTimeout(() => document.getElementById('f-title').focus(), 350);
+}
+
+function openEdit(id) {
+  const v = vacancies.find(x => x.id === id);
+  if (!v) return;
+  editingId = id;
+  document.getElementById('form-title').textContent = 'Редактировать';
+  document.getElementById('form-save-btn').textContent = 'Сохранить';
+  document.getElementById('form-delete-slot').innerHTML =
+    `<button class="btn-delete" onclick="deleteVacancy(${id})">Удалить вакансию</button>`;
+  document.getElementById('f-title').value = v.title;
+  document.getElementById('f-dept').value = v.department;
+  document.getElementById('f-city').value = v.city;
+  document.getElementById('f-salary').value = v.salary;
+  document.getElementById('f-status').value = v.status;
+  document.getElementById('f-priority').value = v.priority;
+  document.getElementById('f-candidates').value = v.candidates;
+  document.getElementById('f-deadline').value = v.deadline || '';
+  document.getElementById('f-notes').value = v.notes || '';
+  openSheet('form-sheet');
+}
+
+function saveForm() {
+  const title = document.getElementById('f-title').value.trim();
+  if (!title) { document.getElementById('f-title').focus(); return; }
+  const v = {
+    title,
+    department: document.getElementById('f-dept').value,
+    city: document.getElementById('f-city').value.trim(),
+    salary: document.getElementById('f-salary').value.trim(),
+    status: document.getElementById('f-status').value,
+    priority: document.getElementById('f-priority').value,
+    candidates: parseInt(document.getElementById('f-candidates').value) || 0,
+    deadline: document.getElementById('f-deadline').value,
+    notes: document.getElementById('f-notes').value.trim(),
+  };
+  if (editingId === null) {
+    vacancies.push({ ...v, id: Date.now() });
+  } else {
+    vacancies = vacancies.map(x => x.id === editingId ? { ...v, id: editingId } : x);
+  }
+  save();
+  closeAll();
+  renderCards();
+  if (tg) tg.HapticFeedback.notificationOccurred('success');
+}
+
+function deleteVacancy(id) {
+  if (tg) {
+    tg.showConfirm('Удалить вакансию?', (ok) => { if (ok) { doDelete(id); } });
+  } else {
+    if (confirm('Удалить вакансию?')) doDelete(id);
+  }
+}
+
+function doDelete(id) {
+  vacancies = vacancies.filter(v => v.id !== id);
+  save();
+  closeAll();
+  renderCards();
+  if (tg) tg.HapticFeedback.notificationOccurred('warning');
+}
+
+renderStats();
+renderFilters();
+renderCards();
+</script>
+</body>
+</html>
