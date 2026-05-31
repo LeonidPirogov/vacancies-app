@@ -2,643 +2,825 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Вакансии</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Вакансии — Отели</title>
+<link
+href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Syne:
+wght@700;800&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
-  :root {
-    --bg: var(--tg-theme-bg-color, #f7f6f3);
-    --bg2: var(--tg-theme-secondary-bg-color, #ffffff);
-    --text: var(--tg-theme-text-color, #1a1a1a);
-    --hint: var(--tg-theme-hint-color, #888888);
-    --accent: var(--tg-theme-button-color, #1a1a1a);
-    --accent-text: var(--tg-theme-button-text-color, #ffffff);
-    --border: rgba(0,0,0,0.08);
-    --safe-top: env(safe-area-inset-top, 0px);
-    --safe-bottom: env(safe-area-inset-bottom, 0px);
-  }
-
-  body {
-    font-family: 'DM Sans', -apple-system, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    min-height: 100dvh;
-    overflow-x: hidden;
-    font-size: 15px;
-  }
-
-  /* Header */
-  .header {
-    background: var(--bg2);
-    border-bottom: 1px solid var(--border);
-    padding: 12px 16px;
-    padding-top: calc(12px + var(--safe-top));
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .logo { display: flex; align-items: center; gap: 10px; }
-  .logo-icon {
-    width: 32px; height: 32px;
-    background: var(--accent);
-    border-radius: 9px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 15px;
-  }
-  .logo-text { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 17px; color: var(--text); }
-
-  /* Add button */
-  .btn-add {
-    background: var(--accent);
-    color: var(--accent-text);
-    border: none;
-    border-radius: 10px;
-    padding: 8px 14px;
-    font-size: 14px;
-    font-weight: 600;
-    font-family: inherit;
-    display: flex; align-items: center; gap: 5px;
-    cursor: pointer;
-    transition: opacity .15s;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .btn-add:active { opacity: .75; }
-
-  /* Scroll container */
-  .scroll-area {
-    padding: 14px 16px;
-    padding-bottom: calc(80px + var(--safe-bottom));
-  }
-
-  /* Stats */
-  .stats {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 16px;
-  }
-  .stat-card {
-    border-radius: 14px;
-    padding: 14px 16px;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-  }
-  .stat-value {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: 26px;
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-  .stat-label {
-    font-size: 12px;
-    color: var(--hint);
-    font-weight: 500;
-  }
-
-  /* Search */
-  .search-wrap { position: relative; margin-bottom: 12px; }
-  .search-input {
-    width: 100%;
-    padding: 10px 14px 10px 38px;
-    border: 1.5px solid var(--border);
-    border-radius: 12px;
-    font-size: 14px;
-    font-family: inherit;
-    background: var(--bg2);
-    color: var(--text);
-    outline: none;
-    -webkit-appearance: none;
-  }
-  .search-input:focus { border-color: var(--accent); }
-  .search-icon {
-    position: absolute; left: 12px; top: 50%;
-    transform: translateY(-50%);
-    font-size: 16px; opacity: .4;
-    pointer-events: none;
-  }
-
-  /* Filters */
-  .filters-scroll {
-    display: flex; gap: 7px;
-    overflow-x: auto;
-    padding-bottom: 4px;
-    margin-bottom: 14px;
-    scrollbar-width: none;
-  }
-  .filters-scroll::-webkit-scrollbar { display: none; }
-  .filter-pill {
-    flex-shrink: 0;
-    padding: 6px 14px;
-    border-radius: 20px;
-    border: 1.5px solid var(--border);
-    font-size: 13px;
-    font-weight: 500;
-    background: var(--bg2);
-    color: var(--hint);
-    cursor: pointer;
-    font-family: inherit;
-    transition: all .15s;
-  }
-  .filter-pill.active {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: var(--accent-text);
-  }
-
-  /* Cards */
-  .vacancy-card {
-    background: var(--bg2);
-    border-radius: 16px;
-    border: 1px solid var(--border);
-    padding: 14px 16px;
-    margin-bottom: 10px;
-    cursor: pointer;
-    transition: transform .1s;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .vacancy-card:active { transform: scale(0.985); }
-
-  .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
-  .card-title { font-weight: 600; font-size: 15px; line-height: 1.3; flex: 1; }
-  .card-meta { font-size: 13px; color: var(--hint); margin-bottom: 8px; }
-  .card-footer { display: flex; align-items: center; justify-content: space-between; }
-  .card-chips { display: flex; gap: 6px; flex-wrap: wrap; }
-
-  /* Chips */
-  .chip {
-    display: inline-flex; align-items: center; gap: 4px;
-    padding: 3px 9px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 500;
-    white-space: nowrap;
-  }
-  .chip-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
-
-  .cand-info { font-size: 12px; color: var(--hint); display: flex; align-items: center; gap: 4px; }
-
-  /* No results */
-  .empty { text-align: center; color: var(--hint); font-size: 14px; padding: 40px 20px; }
-
-  /* Bottom sheet */
-  .sheet-overlay {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.4);
-    z-index: 100;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity .25s;
-  }
-  .sheet-overlay.open { opacity: 1; pointer-events: all; }
-
-  .sheet {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    background: var(--bg2);
-    border-radius: 20px 20px 0 0;
-    padding: 0 16px calc(24px + var(--safe-bottom));
-    z-index: 101;
-    transform: translateY(100%);
-    transition: transform .3s cubic-bezier(.4,0,.2,1);
-    max-height: 92vh;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-  }
-  .sheet.open { transform: translateY(0); }
-
-  .sheet-handle {
-    width: 36px; height: 4px;
-    background: var(--border);
-    border-radius: 2px;
-    margin: 12px auto 20px;
-  }
-  .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-  .sheet-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; }
-  .sheet-close {
-    background: none; border: none;
-    font-size: 22px; color: var(--hint);
-    line-height: 1; cursor: pointer;
-    padding: 4px; font-family: inherit;
-  }
-
-  /* Form */
-  .form-field { margin-bottom: 14px; }
-  .form-label {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--hint);
-    text-transform: uppercase;
-    letter-spacing: .5px;
-    margin-bottom: 6px;
-    display: block;
-  }
-  .form-input {
-    width: 100%;
-    padding: 10px 13px;
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    font-size: 14px;
-    font-family: inherit;
-    background: var(--bg);
-    color: var(--text);
-    outline: none;
-    -webkit-appearance: none;
-    appearance: none;
-    transition: border-color .15s;
-  }
-  .form-input:focus { border-color: var(--accent); background: var(--bg2); }
-  textarea.form-input { resize: none; }
-
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-
-  /* Sheet buttons */
-  .sheet-actions { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; }
-  .btn-save {
-    background: var(--accent);
-    color: var(--accent-text);
-    border: none;
-    border-radius: 12px;
-    padding: 14px;
-    font-size: 15px;
-    font-weight: 600;
-    font-family: inherit;
-    cursor: pointer;
-    transition: opacity .15s;
-  }
-  .btn-save:active { opacity: .8; }
-  .btn-cancel {
-    background: transparent;
-    color: var(--hint);
-    border: 1.5px solid var(--border);
-    border-radius: 12px;
-    padding: 13px;
-    font-size: 15px;
-    font-family: inherit;
-    cursor: pointer;
-  }
-  .btn-delete {
-    background: #fdecea;
-    color: #c62828;
-    border: none;
-    border-radius: 12px;
-    padding: 13px;
-    font-size: 15px;
-    font-weight: 600;
-    font-family: inherit;
-    cursor: pointer;
-  }
-
-  /* Detail sheet */
-  .detail-row { padding: 10px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-  .detail-row:last-child { border-bottom: none; }
-  .detail-key { font-size: 13px; color: var(--hint); }
-  .detail-val { font-size: 14px; font-weight: 500; text-align: right; max-width: 60%; }
-  .detail-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; margin-bottom: 4px; }
-  .detail-dept { color: var(--hint); font-size: 14px; margin-bottom: 16px; }
-  .detail-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans'
+,
+'Segoe UI'
+, sans-serif; background: #f7f6f3; color: #1a1a1a;
+min-height: 100vh; }
+button { cursor: pointer; font-family: inherit; }
+input, select, textarea { font-family: inherit; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-thumb { background: #d0cec9; border-radius: 3px; }
+.header { background: #fff; border-bottom: 1.5px solid #f0eeeb; padding: 0 32px; }
+.header-inner { max-width: 1300px; margin: 0 auto; display: flex; align-items: center;
+justify-content: space-between; height: 64px; }
+.logo { display: flex; align-items: center; gap: 12px; }
+.logo-icon { width: 34px; height: 34px; background: #1a1a1a; border-radius: 9px; display:
+flex; align-items: center; justify-content: center; font-size: 16px; }
+.logo-text { font-family: ‘Syne’
+, sans-serif; font-weight: 800; font-size: 18px; letter-spacing:
+-0.5px; }
+.main { max-width: 1300px; margin: 0 auto; padding: 28px 32px; }
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 28px; }
+.stat-card { border: 1.5px solid #f0eeeb; border-radius: 14px; padding: 18px 22px; }
+.stat-value { font-family: ‘Syne’
+, sans-serif; font-weight: 800; font-size: 28px; }
+.stat-label { font-size: 12px; color: #888; font-weight: 500; margin-top: 2px; }
+.controls { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;
+}
+.search-input { padding: 9px 13px; border: 1.5px solid #e0ddd8; border-radius: 9px;
+font-size: 14px; outline: none; background: #fff; width: 200px; transition: border-color .15s; }
+.search-input:focus { border-color: #1a1a1a; }
+.filter-select { padding: 8px 13px; border: 1.5px solid #e0ddd8; border-radius: 9px; font-size:
+13px; outline: none; background: #fff; color: #444; transition: border-color .15s; cursor:
+pointer; }
+.filter-select:focus { border-color: #1a1a1a; }
+.view-toggle { margin-left: auto; display: flex; gap: 4px; background: #f0eeeb; border-radius:
+10px; padding: 4px; }
+.tab-btn { padding: 7px 18px; border-radius: 8px; border: none; font-size: 13px; font-weight:
+500; transition: all .15s; background: transparent; color: #888; }
+.tab-btn.active { background: #1a1a1a; color: #fff; }
+.tab-btn:not(.active):hover { background: #e5e3e0; color: #333; }
+/* Table */
+.table-wrap { background: #fff; border-radius: 16px; border: 1.5px solid #f0eeeb; overflow-x:
+auto; }
+table { width: 100%; border-collapse: collapse; min-width: 700px; }
+thead tr { background: #faf9f7; border-bottom: 1.5px solid #f0eeeb; }
+th { padding: 12px 16px; text-align: left; font-size: 11px; font-weight: 700; color: #aaa;
+text-transform: uppercase; letter-spacing: .5px; white-space: nowrap; }
+tbody tr { border-bottom: 1px solid #f5f4f1; transition: background .1s; cursor: pointer; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: #f9f8f6; }
+td { padding: 12px 16px; font-size: 14px; vertical-align: middle; }
+.td-hotel { font-weight: 700; font-size: 14px; }
+.td-rate { font-weight: 700; color: #2e7d32; font-size: 13px; white-space: nowrap; }
+.td-sec { color: #666; font-size: 13px; }
+/* Kanban */
+.kanban-wrap { overflow-x: auto; padding-bottom: 8px; }
+.kanban { display: flex; gap: 14px; align-items: flex-start; min-width: max-content; }
+.kanban-col { width: 230px; background: #faf9f7; border-radius: 16px; padding: 14px; border:
+1.5px solid #f0eeeb; flex-shrink: 0; }
+.kanban-col-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.kanban-col-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.kanban-col-title { font-weight: 700; font-size: 13px; flex: 1; }
+.kanban-col-count { border-radius: 20px; padding: 2px 8px; font-size: 11px; font-weight: 700;
+}
+.kanban-card { background: #fff; border-radius: 12px; padding: 12px; margin-bottom: 8px;
+box-shadow: 0 1px 4px rgba(0,0,0,.06); border: 1.5px solid #f0eeeb; transition: box-shadow
+.15s; cursor: pointer; }
+.kanban-card:last-child { margin-bottom: 0; }
+.kanban-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.10); }
+.kanban-card-hotel { font-weight: 700; font-size: 13px; margin-bottom: 4px; }
+.kanban-card-job { font-size: 12px; color: #555; margin-bottom: 8px; }
+.kanban-card-footer { display: flex; justify-content: space-between; align-items: center; gap:
+6px; flex-wrap: wrap; }
+.kanban-rate { font-weight: 700; color: #2e7d32; font-size: 12px; }
+.kanban-schedule { font-size: 11px; color: #aaa; }
+.kanban-empty { text-align: center; color: #ccc; font-size: 12px; padding: 16px 0; }
+/* Chips */
+.chip { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px;
+font-size: 12px; font-weight: 500; white-space: nowrap; }
+/* Buttons */
+.btn-primary { background: #1a1a1a; color: #fff; border: none; border-radius: 10px; padding:
+10px 20px; font-size: 14px; font-weight: 600; transition: opacity .15s; display: inline-flex;
+align-items: center; gap: 6px; }
+.btn-primary:hover { opacity: .85; }
+.btn-ghost { background: transparent; color: #888; border: 1.5px solid #e0ddd8;
+border-radius: 10px; padding: 9px 18px; font-size: 14px; transition: all .15s; }
+.btn-ghost:hover { border-color: #aaa; color: #333; }
+.btn-danger { background: #fdecea; color: #c62828; border: none; border-radius: 10px;
+padding: 10px 16px; font-size: 14px; font-weight: 600; }
+.btn-danger:hover { opacity: .8; }
+/* Modal */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.4); display: flex;
+align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(2px); }
+.modal-overlay.hidden { display: none; }
+.modal { background: #fff; border-radius: 18px; padding: 32px; width: 540px; max-width:
+95vw; max-height: 90vh; overflow-y: auto; }
+.modal-header { display: flex; justify-content: space-between; align-items: center;
+margin-bottom: 24px; }
+.modal-title { font-family: ‘Syne’
+, sans-serif; font-weight: 800; font-size: 20px; }
+.modal-close { background: none; border: none; font-size: 24px; color: #bbb; line-height: 1;
+cursor: pointer; }
+.modal-footer { display: flex; justify-content: space-between; margin-top: 24px; }
+.modal-footer-right { display: flex; gap: 10px; }
+.form-grid { display: grid; gap: 14px; }
+.form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-label { font-size: 11px; font-weight: 700; color: #aaa; margin-bottom: 5px;
+text-transform: uppercase; letter-spacing: .5px; display: block; }
+.form-input { width: 100%; padding: 9px 13px; border: 1.5px solid #e0ddd8; border-radius:
+9px; font-size: 14px; outline: none; background: #faf9f7; transition: border-color .15s; }
+.form-input:focus { border-color: #1a1a1a; background: #fff; }
+textarea.form-input { resize: vertical; }
+.no-results { padding: 40px; text-align: center; color: #bbb; font-size: 14px; }
 </style>
 </head>
 <body>
-
 <div class="header">
-  <div class="logo">
-    <div class="logo-icon">💼</div>
-    <span class="logo-text">Вакансии</span>
-  </div>
-  <button class="btn-add" onclick="openAdd()">+ Добавить</button>
+<div class="header-inner">
+<div class="logo">
+<div class="logo-icon">
 </div>
-
-<div class="scroll-area">
-  <div class="stats" id="stats"></div>
-
-  <div class="search-wrap">
-    <span class="search-icon">🔍</span>
-    <input class="search-input" type="text" id="search" placeholder="Поиск по названию или городу…" oninput="renderCards()">
-  </div>
-
-  <div class="filters-scroll" id="status-filters"></div>
-
-  <div id="cards-list"></div>
+🏨
+<span class="logo-text">Вакансии</span>
 </div>
-
-<!-- Bottom sheet overlay -->
-<div class="sheet-overlay" id="overlay" onclick="closeAll()"></div>
-
-<!-- Form sheet -->
-<div class="sheet" id="form-sheet">
-  <div class="sheet-handle"></div>
-  <div class="sheet-header">
-    <span class="sheet-title" id="form-title">Новая вакансия</span>
-    <button class="sheet-close" onclick="closeAll()">×</button>
-  </div>
-
-  <div class="form-field">
-    <label class="form-label">Должность *</label>
-    <input class="form-input" id="f-title" placeholder="Менеджер по продажам">
-  </div>
-  <div class="form-row">
-    <div class="form-field">
-      <label class="form-label">Отдел</label>
-      <select class="form-input" id="f-dept">
-        <option>IT</option><option>Продажи</option><option>Финансы</option>
-        <option>HR</option><option>Логистика</option><option>Маркетинг</option><option>Другое</option>
-      </select>
-    </div>
-    <div class="form-field">
-      <label class="form-label">Город</label>
-      <input class="form-input" id="f-city" placeholder="Москва">
-    </div>
-  </div>
-  <div class="form-field">
-    <label class="form-label">Зарплата</label>
-    <input class="form-input" id="f-salary" placeholder="80 000 – 120 000 ₽">
-  </div>
-  <div class="form-row">
-    <div class="form-field">
-      <label class="form-label">Статус</label>
-      <select class="form-input" id="f-status">
-        <option>Открыта</option><option>В работе</option><option>Закрыта</option>
-      </select>
-    </div>
-    <div class="form-field">
-      <label class="form-label">Приоритет</label>
-      <select class="form-input" id="f-priority">
-        <option>Высокий</option><option>Средний</option><option>Низкий</option>
-      </select>
-    </div>
-  </div>
-  <div class="form-row">
-    <div class="form-field">
-      <label class="form-label">Кандидатов</label>
-      <input class="form-input" id="f-candidates" type="number" min="0" value="0">
-    </div>
-    <div class="form-field">
-      <label class="form-label">Дедлайн</label>
-      <input class="form-input" id="f-deadline" type="date">
-    </div>
-  </div>
-  <div class="form-field">
-    <label class="form-label">Заметки</label>
-    <textarea class="form-input" id="f-notes" rows="3" placeholder="Требования, комментарии…"></textarea>
-  </div>
-
-  <div class="sheet-actions">
-    <button class="btn-save" id="form-save-btn" onclick="saveForm()">Добавить</button>
-    <div id="form-delete-slot"></div>
-    <button class="btn-cancel" onclick="closeAll()">Отмена</button>
-  </div>
+<button class="btn-primary" onclick="openAdd()">
+<span style="font-size:16px;line-height:1">+</span> Добавить вакансию
+</button>
 </div>
-
-<!-- Detail sheet -->
-<div class="sheet" id="detail-sheet">
-  <div class="sheet-handle"></div>
-  <div id="detail-content"></div>
-  <div class="sheet-actions">
-    <button class="btn-save" id="detail-edit-btn">Редактировать</button>
-    <button class="btn-cancel" onclick="closeAll()">Закрыть</button>
-  </div>
 </div>
-
+<div class="main">
+<div class="stats" id="stats"></div>
+<div class="controls">
+<input class="search-input" type="text" id="search" placeholder="🔍 Поиск…
+"
+oninput="render()">
+<select class="filter-select" id="filter-hotel" onchange="render()"><option value="">Все
+отели</option></select>
+<select class="filter-select" id="filter-job" onchange="render()"><option value="">Все
+должности</option></select>
+<div class="view-toggle">
+<button class="tab-btn active" id="tab-table" onclick="setView('table')">☰
+Таблица</button>
+<button class="tab-btn" id="tab-kanban" onclick="setView('kanban')">⊞ Канбан</button>
+</div>
+</div>
+<div id="content"></div>
+</div>
+<!-- Modal -->
+<div class="modal-overlay hidden" id="modal-overlay" onclick="handleOverlayClick(event)">
+<div class="modal">
+<div class="modal-header">
+<span class="modal-title" id="modal-title">Новая вакансия</span>
+<button class="modal-close" onclick="closeModal()">×</button>
+</div>
+<div class="form-grid">
+<div>
+<label class="form-label">Название отеля *</label>
+<input class="form-input" id="f-hotel" placeholder="Например: Шератон"
+list="hotel-list">
+<datalist id="hotel-list"></datalist>
+</div>
+<div>
+<label class="form-label">Должность *</label>
+<input class="form-input" id="f-job" placeholder="Например: Официант" list="job-list">
+<datalist id="job-list"></datalist>
+</div>
+<div class="form-row-2">
+<div>
+<label class="form-label">Ставка в час (₪)</label>
+<input class="form-input" id="f-rate" placeholder="Например: 45-50">
+</div>
+<div>
+<label class="form-label">График</label>
+<input class="form-input" id="f-schedule" placeholder="Например: утро, сменный">
+</div>
+</div>
+<div>
+<label class="form-label">Языки</label>
+<input class="form-input" id="f-languages" placeholder="Иврит, русский, английский">
+</div>
+<div>
+<label class="form-label">Заметки</label>
+<textarea class="form-input" id="f-notes" rows="3" placeholder="Дополнительные
+требования…
+"></textarea>
+</div>
+</div>
+<div class="modal-footer">
+<div id="modal-delete-btn"></div>
+<div class="modal-footer-right">
+<button class="btn-ghost" onclick="closeModal()">Отмена</button>
+<button class="btn-primary" onclick="saveForm()"
+id="modal-save-btn">Добавить</button>
+</div>
+</div>
+</div>
+</div>
 <script>
-const tg = window.Telegram?.WebApp;
-if (tg) { tg.ready(); tg.expand(); }
-
-const STATUS_COLORS = {
-  "Открыта":  { bg: "#e8f5e9", text: "#2e7d32", dot: "#43a047" },
-  "В работе": { bg: "#fff8e1", text: "#f57f17", dot: "#ffa000" },
-  "Закрыта":  { bg: "#f3f3f3", text: "#757575", dot: "#9e9e9e" },
-};
-const PRIORITY_COLORS = {
-  "Высокий": { bg: "#fdecea", text: "#c62828" },
-  "Средний": { bg: "#fff3e0", text: "#e65100" },
-  "Низкий":  { bg: "#e8eaf6", text: "#283593" },
-};
-const STATUSES = ["Все", "Открыта", "В работе", "Закрыта"];
-
-const DEFAULT_DATA = [
-  { id: 1, title: "Менеджер по продажам", department: "Продажи", city: "Москва", salary: "80 000 – 120 000 ₽", status: "Открыта", priority: "Высокий", deadline: "2026-06-15", candidates: 3, notes: "Нужен опыт в B2B" },
-  { id: 2, title: "Frontend-разработчик", department: "IT", city: "Удалённо", salary: "150 000 – 200 000 ₽", status: "В работе", priority: "Высокий", deadline: "2026-06-30", candidates: 7, notes: "React, TypeScript" },
-  { id: 3, title: "Бухгалтер", department: "Финансы", city: "Санкт-Петербург", salary: "70 000 – 90 000 ₽", status: "Открыта", priority: "Средний", deadline: "2026-07-10", candidates: 1, notes: "" },
-  { id: 4, title: "HR-generalist", department: "HR", city: "Москва", salary: "90 000 – 110 000 ₽", status: "Закрыта", priority: "Низкий", deadline: "2026-05-01", candidates: 12, notes: "Закрыто, взяли Анну К." },
-  { id: 5, title: "Водитель-экспедитор", department: "Логистика", city: "Москва", salary: "60 000 – 75 000 ₽", status: "В работе", priority: "Средний", deadline: "2026-06-20", candidates: 4, notes: "Категория B, C" },
-  { id: 6, title: "Маркетолог", department: "Маркетинг", city: "Удалённо", salary: "100 000 – 140 000 ₽", status: "Открыта", priority: "Высокий", deadline: "2026-07-01", candidates: 0, notes: "Digital-маркетинг" },
+const CATEGORIES = [
+{ key: "Кухня"
+, label: "🍳 Кухня"
+, bg: "#fff8e1"
+, text: "#e65100"
+, dot: "#ffa000"
+,
+keywords: ["повар"
+,
+"кондитер"
+,
+"бариста"
+,
+"посудомой"
+,
+"раннер"
+,
+"кухн"] },
+{ key: "Зал"
+, label: "🍽 Зал"
+, bg: "#e8f5e9"
+, text: "#2e7d32"
+, dot: "#43a047"
+,
+keywords: ["официант"
+"хостес"
+,
+,
+"рум"
+,
+"кабат"] },
+{ key: "Ресепшн"
+, label: "
+🛎 Ресепшн"
+, bg: "#e3f2fd"
+, text: "#1565c0"
+, dot: "#1e88e5"
+,
+keywords: ["ресепшн"] },
+{ key: "Номерной"
+, label: "
+🛏 Номерной фонд"
+,bg: "#fce4ec"
+, text: "#880e4f"
+, dot:
+"#e91e63"
+, keywords: ["горнич"
+"штахим"
+,
+,
+"хаузкипинг"] },
+{ key: "Техника"
+, label: "🔧 Техника"
+, bg: "#f3e5f5"
+, text: "#6a1b9a"
+, dot: "#9c27b0"
+,
+keywords: ["электрик"
+"ахзака"
+,
+,
+"кондицион"
+,
+"инженер"
+,
+"слесар"] },
+{ key: "Охрана"
+, label: "🔒 Охрана"
+, bg: "#fafafa"
+, text: "#424242"
+, dot: "#757575"
+,
+keywords: ["охрана"
+,
+"security"] },
+{ key: "Другое"
+, label: "
+📋 Другое"
+, bg: "#f0eeeb"
+, text: "#555"
+, dot: "#aaa"
+,
+keywords: [] },
 ];
-
-let vacancies = JSON.parse(localStorage.getItem('hr_vac') || 'null') || DEFAULT_DATA;
-let filterStatus = "Все";
+function getCategory(job) {
+const j = job.toLowerCase();
+for (const cat of CATEGORIES) {
+if (cat.keywords.some(k => j.includes(k))) return cat;
+}
+return CATEGORIES[CATEGORIES.length - 1];
+}
+const DEFAULT
+_
+DATA = [
+{ id:1, hotel:"Краун море"
+, job:"Охрана (армия)"
+, rate:""
+, schedule:""
+,
+languages:""
+, notes:"" },
+{ id:2, hotel:"Кфар макабия"
+, job:"Официант"
+, rate:"42-45"
+, schedule:""
+,
+languages:""
+, notes:"" },
+{ id:3, hotel:"Кфар макабия"
+, job:"Ресепшн"
+, rate:"42-45"
+, schedule:""
+,
+languages:""
+, notes:"" },
+{ id:4, hotel:"Кфар макабия"
+, job:"Иш ахзака кондиционерщик"
+,rate:"60-65"
+,
+schedule:""
+, languages:""
+, notes:"" },
+{ id:5, hotel:"Шератон"
+, job:"Повар"
+, rate:""
+, schedule:""
+,
+languages:""
+, notes:"" },
+{ id:6, hotel:"Шератон"
+, job:"Ресепшн"
+, rate:""
+, schedule:""
+,
+languages:""
+, notes:"" },
+{ id:7, hotel:"Риц Карлтон"
+, job:"Официант на завтрак"
+, rate:""
+,
+schedule:"завтрак"
+, languages:""
+, notes:"sales" },
+{ id:8, hotel:"Риц Карлтон"
+, job:"Повар"
+, rate:""
+, schedule:""
+,
+languages:""
+, notes:"" },
+{ id:9, hotel:"Риц Карлтон"
+, job:"Кондитер"
+, rate:""
+, schedule:""
+,
+languages:""
+, notes:"" },
+{ id:10, hotel:"Риц Карлтон"
+, job:"Ресепшн спа"
+, rate:""
+, schedule:""
+,
+languages:""
+, notes:"" },
+{ id:11, hotel:"Риц Карлтон"
+, job:"Хостес на завтраки"
+, rate:""
+,
+schedule:"завтрак"
+, languages:""
+, notes:"" },
+{ id:12, hotel:"Джордж"
+, job:"Официант"
+, rate:"50"
+, schedule:""
+,
+languages:""
+, notes:"" },
+{ id:13, hotel:"Джордж"
+, job:"Ресепшн/спа"
+, rate:"45-47"
+, schedule:""
+,
+languages:""
+, notes:"" },
+{ id:14, hotel:"Джордж"
+, job:"Ахзака"
+, rate:"50-55"
+, schedule:""
+,
+languages:""
+, notes:"" },
+{ id:15, hotel:"Джордж"
+, job:"Охрана"
+, rate:"50-55"
+, schedule:""
+,
+languages:""
+, notes:"" },
+{ id:16, hotel:"Бейдилис"
+, job:"Горничная"
+, rate:"48"
+, schedule:""
+,
+languages:""
+, notes:"2 места" },
+{ id:17, hotel:"Джаффа"
+, job:"Официант"
+, rate:"45"
+, schedule:""
+,
+languages:""
+, notes:"" },
+{ id:18, hotel:"Бобо"
+, job:"Ресепшн"
+, rate:"40-43"
+, schedule:""
+,
+languages:""
+, notes:"" },
+{ id:19, hotel:"Сетай"
+, job:"Хостес"
+, rate:"47"
+, schedule:""
+,
+languages:""
+, notes:"" },
+{ id:20, hotel:"Сетай"
+, job:"Официант"
+, rate:"45"
+, schedule:""
+,
+languages:""
+, notes:"" },
+{ id:21, hotel:"Сетай"
+, job:"Иш ахзака"
+, rate:"50"
+, schedule:""
+,
+languages:""
+, notes:"" },
+{ id:22, hotel:"Сетай"
+, job:"Горничная"
+, rate:"50"
+, schedule:""
+,
+languages:""
+, notes:"" },
+{ id:23, hotel:"Сетай"
+, job:"Повар гриль"
+, rate:"55"
+, schedule:"9-18"
+,
+languages:""
+, notes:"" },
+{ id:24, hotel:"Сетай"
+, job:"Повар ресторан"
+, rate:""
+, schedule:"15-23"
+,
+languages:""
+, notes:"" },
+{ id:25, hotel:"Отель Яхт Герцлия"
+, job:"Официант"
+, rate:"42"
+, schedule:""
+,
+languages:""
+, notes:"" },
+{ id:26, hotel:"Дриско"
+, job:"Штахим"
+, rate:"50"
+, schedule:"утро"
+,
+languages:""
+, notes:"" },
+{ id:27, hotel:"Норман"
+, job:"Повар"
+, rate:"50-53"
+, schedule:"сменный"
+,
+languages:""
+, notes:"" },
+{ id:28, hotel:"Норман"
+, job:"Электрик"
+, rate:""
+, schedule:""
+,
+languages:""
+, notes:"" },
+{ id:29, hotel:"Кфар макабия"
+, job:"Горничная"
+, rate:""
+, schedule:""
+,
+languages:""
+, notes:"" },
+{ id:30, hotel:"Кфар макабия"
+, job:"Ресепшн спортклуб"
+, rate:""
+, schedule:""
+,
+languages:""
+, notes:"" },
+{ id:31, hotel:"Кфар макабия"
+, job:"Ресепшн лобби"
+, rate:""
+, schedule:""
+,
+languages:""
+, notes:"" },
+{ id:32, hotel:"Кфар макабия"
+, job:"Официант"
+, rate:""
+, schedule:""
+,
+languages:""
+, notes:"" },
+{ id:33, hotel:"Кфар макабия"
+, job:"Электрик"
+, rate:""
+, schedule:""
+,
+languages:""
+, notes:"" },
+{ id:34, hotel:"Кемпински"
+, job:"Официант"
+, rate:"55"
+, schedule:""
+,
+languages:""
+, notes:"" },
+{ id:35, hotel:"Джаффа"
+, job:"Кабат"
+, rate:"47"
+, schedule:""
+,
+languages:""
+, notes:"" },
+{ id:36, hotel:"Джаффа"
+, job:"Официант"
+, rate:"45"
+, schedule:""
+,
+languages:""
+, notes:"" },
+{ id:37, hotel:"Джаффа"
+, job:"Электрик"
+, rate:"65"
+, schedule:""
+,
+languages:""
+, notes:"" },
+{ id:38, hotel:"Джаффа"
+, job:"Повар"
+, rate:"53"
+, schedule:""
+,
+languages:""
+, notes:"" },
+{ id:39, hotel:"Джаффа"
+, job:"Ресепшн"
+, rate:"43"
+, schedule:""
+,
+languages:""
+, notes:"" },
+{ id:40, hotel:"Джаффа"
+, job:"Бариста"
+, rate:"50"
+, schedule:""
+,
+languages:""
+, notes:"" },
+{ id:41, hotel:"Джаффа"
+, job:"Рум-сервис"
+, rate:"45"
+, schedule:""
+,
+languages:""
+, notes:"" },
+{ id:42, hotel:"Джаффа"
+, job:"Хостес"
+, rate:"45"
+, schedule:""
+,
+languages:""
+, notes:"" },
+{ id:43, hotel:"Джаффа"
+, job:"Горничная"
+, rate:"50"
+, schedule:""
+,
+languages:""
+, notes:"" },
+{ id:44, hotel:"Студия поваров"
+, job:"Раннер"
+, rate:""
+,
+schedule:"8-17/14-00"
+,languages:""
+, notes:"" },
+{ id:45, hotel:"Студия поваров"
+, job:"Посудомойщик"
+, rate:"10-20"
+, schedule:""
+,
+languages:""
+, notes:"" },
+];
+let vacancies = JSON.parse(localStorage.getItem('hr
+hotels
+_
+_
+v3') || 'null') || DEFAULT
+_
 let editingId = null;
-let viewingId = null;
-
-function save() { localStorage.setItem('hr_vac', JSON.stringify(vacancies)); }
-
+DATA;
+let currentView = 'table';
+function save() { localStorage.setItem('hr
+hotels
+v3'
+_
+_
+, JSON.stringify(vacancies)); }
 function getFiltered() {
-  const q = document.getElementById('search').value.toLowerCase();
-  return vacancies.filter(v => {
-    if (filterStatus !== "Все" && v.status !== filterStatus) return false;
-    if (q && !v.title.toLowerCase().includes(q) && !v.city.toLowerCase().includes(q)) return false;
-    return true;
-  });
+const q = document.getElementById('search').value.toLowerCase();
+const hotel = document.getElementById('filter-hotel').value;
+const job = document.getElementById('filter-job').value;
+return vacancies.filter(v => {
+if (hotel && v.hotel !== hotel) return false;
+if (job && v.job !== job) return false;
+if (q && !v.hotel.toLowerCase().includes(q) && !v.job.toLowerCase().includes(q) &&
+!(v.notes||'').toLowerCase().includes(q)) return false;
+return true;
+});
 }
-
-function formatDate(d) {
-  if (!d) return "—";
-  const dt = new Date(d + 'T00:00:00');
-  return dt.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
+function updateDropdowns() {
+const hotels = [...new Set(vacancies.map(v => v.hotel))].sort();
+const jobs = [...new Set(vacancies.map(v => v.job))].sort();
+const hotelSel = document.getElementById('filter-hotel');
+const jobSel = document.getElementById('filter-job');
+const curHotel = hotelSel.value;
+const curJob = jobSel.value;
+hotelSel.innerHTML = '<option value="">Все отели</option>' + hotels.map(h => `<option
+value="${h}"${h===curHotel?' selected':''}>${h}</option>`).join('');
+jobSel.innerHTML = '<option value="">Все должности</option>' + jobs.map(j => `<option
+value="${j}"${j===curJob?' selected':''}>${j}</option>`).join('');
+document.getElementById('hotel-list').innerHTML = hotels.map(h => `<option
+value="${h}">`).join('');
+document.getElementById('job-list').innerHTML = jobs.map(j => `<option
+value="${j}">`).join('');
 }
-
 function renderStats() {
-  const total = vacancies.length;
-  const open = vacancies.filter(v => v.status === "Открыта").length;
-  const inprog = vacancies.filter(v => v.status === "В работе").length;
-  const closed = vacancies.filter(v => v.status === "Закрыта").length;
-  const cards = [
-    { label: "Всего вакансий", value: total, color: "#1a1a1a" },
-    { label: "Открыто", value: open, color: "#2e7d32", bg: "#e8f5e9" },
-    { label: "В работе", value: inprog, color: "#e65100", bg: "#fff8e1" },
-    { label: "Закрыто", value: closed, color: "#757575", bg: "#f3f3f3" },
-  ];
-  document.getElementById('stats').innerHTML = cards.map(c =>
-    `<div class="stat-card" ${c.bg ? `style="background:${c.bg}"` : ''}>
-      <div class="stat-value" style="color:${c.color}">${c.value}</div>
-      <div class="stat-label">${c.label}</div>
-    </div>`
-  ).join('');
+const total = vacancies.length;
+const hotels = new Set(vacancies.map(v => v.hotel)).size;
+const jobs = new Set(vacancies.map(v => v.job)).size;
+const withRate = vacancies.filter(v => v.rate).length;
+document.getElementById('stats').innerHTML = [
+{ label:"Всего вакансий"
+, value:total, color:"#1a1a1a"
+, bg:"#fff" },
+{ label:"Отелей"
+, value:hotels, color:"#1565c0"
+, bg:"#e3f2fd" },
+{ label:"Должностей"
+, value:jobs, color:"#6a1b9a"
+, bg:"#f3e5f5" },
+{ label:"Со ставкой"
+, value:withRate, color:"#2e7d32"
+, bg:"#e8f5e9" },
+].map(c => `<div class="stat-card" style="background:${c.bg}">
+<div class="stat-value" style="color:${c.color}">${c.value}</div>
+<div class="stat-label">${c.label}</div>
+</div>`).join('');
 }
-
-function renderFilters() {
-  document.getElementById('status-filters').innerHTML = STATUSES.map(s =>
-    `<button class="filter-pill${filterStatus === s ? ' active' : ''}" onclick="setFilter('${s}')">${s}</button>`
-  ).join('');
+function renderTable(data) {
+if (!data.length) return
+найдены</div></div>`
+;
+return
+`<div class="table-wrap"><table>
+`<div class="table-wrap"><div class="no-results">Вакансии не
+<thead><tr><th>Отель</th><th>Должность</th><th>Ставка/час</th><th>График</th><th>
+Языки</th><th>Заметки</th></tr></thead>
+<tbody>${data.map(v => {
+const cat = getCategory(v.job);
+return
+`<tr onclick="openEdit(${v.id})">
+<td class="td-hotel">${v.hotel}</td>
+<td><span class="chip"
+style="background:${cat.bg};color:${cat.text}">${v.job}</span></td>
+<td class="td-rate">${v.rate ? v.rate+' ₪' : '<span style="color:#ccc">—</span>'}</td>
+<td class="td-sec">${v.schedule||'<span style="color:#ddd">—</span>'}</td>
+<td class="td-sec">${v.languages||'<span style="color:#ddd">—</span>'}</td>
+<td class="td-sec"
+style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${v.note
+s||''}</td>
+</tr>`
+;
+}).join('')}</tbody>
+</table></div>`
+;
 }
-
-function setFilter(s) { filterStatus = s; renderCards(); renderFilters(); }
-
-function renderCards() {
-  const data = getFiltered();
-  renderStats();
-  if (data.length === 0) {
-    document.getElementById('cards-list').innerHTML = '<div class="empty">Вакансии не найдены</div>';
-    return;
-  }
-  document.getElementById('cards-list').innerHTML = data.map(v => {
-    const sc = STATUS_COLORS[v.status];
-    const pc = PRIORITY_COLORS[v.priority];
-    return `<div class="vacancy-card" onclick="openDetail(${v.id})">
-      <div class="card-top">
-        <div class="card-title">${v.title}</div>
-        <span class="chip" style="background:${sc.bg};color:${sc.text};flex-shrink:0">
-          <span class="chip-dot" style="background:${sc.dot}"></span>${v.status}
-        </span>
-      </div>
-      <div class="card-meta">${v.department} · ${v.city}${v.salary ? ' · ' + v.salary : ''}</div>
-      <div class="card-footer">
-        <div class="card-chips">
-          <span class="chip" style="background:${pc.bg};color:${pc.text}">${v.priority}</span>
-          ${v.deadline ? `<span class="chip" style="background:#f0eeeb;color:#555">${formatDate(v.deadline)}</span>` : ''}
-        </div>
-        ${v.candidates > 0 ? `<div class="cand-info">👤 ${v.candidates}</div>` : ''}
-      </div>
-    </div>`;
-  }).join('');
+function renderKanban(data) {
+const cols = CATEGORIES.map(cat => {
+const items = data.filter(v => getCategory(v.job).key === cat.key);
+if (!items.length) return '';
+const cards = items.map(v => `
+<div class="kanban-card" onclick="openEdit(${v.id})">
+<div class="kanban-card-hotel">${v.hotel}</div>
+<div class="kanban-card-job">${v.job}</div>
+<div class="kanban-card-footer">
+<span class="kanban-rate">${v.rate ? v.rate+' ₪' : ''}</span>
+<span class="kanban-schedule">${v.schedule||''}</span>
+</div>
+${v.notes ? `<div style="font-size:11px;color:#aaa;margin-top:6px;border-top:1px solid
+#f0eeeb;padding-top:6px">${v.notes}</div>`
+: ''}
+</div>`).join('');
+return
+`<div class="kanban-col">
+<div class="kanban-col-header">
+<span class="kanban-col-dot" style="background:${cat.dot}"></span>
+<span class="kanban-col-title">${cat.label}</span>
+<span class="kanban-col-count"
+style="background:${cat.bg};color:${cat.text}">${items.length}</span>
+</div>
+${cards}
+</div>`
+;
+}).filter(Boolean).join('');
+return
+`<div class="kanban-wrap"><div class="kanban">${cols || '<div
+style="color:#ccc;padding:40px">Вакансии не найдены</div>'}</div></div>`
+;
 }
-
-function openSheet(id) {
-  document.getElementById('overlay').classList.add('open');
-  document.getElementById(id).classList.add('open');
-  document.body.style.overflow = 'hidden';
-  if (tg) tg.BackButton.show();
+function setView(v) {
+currentView = v;
+document.getElementById('tab-table').className = 'tab-btn' + (v==='table'?' active':'');
+document.getElementById('tab-kanban').className = 'tab-btn' + (v==='kanban'?' active':'');
+render();
 }
-
-function closeAll() {
-  document.getElementById('overlay').classList.remove('open');
-  document.getElementById('form-sheet').classList.remove('open');
-  document.getElementById('detail-sheet').classList.remove('open');
-  document.body.style.overflow = '';
-  editingId = null;
-  viewingId = null;
-  if (tg) tg.BackButton.hide();
-}
-
-if (tg) {
-  tg.BackButton.onClick(() => closeAll());
-}
-
-function openDetail(id) {
-  const v = vacancies.find(x => x.id === id);
-  if (!v) return;
-  viewingId = id;
-  const sc = STATUS_COLORS[v.status];
-  const pc = PRIORITY_COLORS[v.priority];
-  document.getElementById('detail-content').innerHTML = `
-    <div class="detail-title">${v.title}</div>
-    <div class="detail-dept">${v.department} · ${v.city}</div>
-    <div class="detail-chips">
-      <span class="chip" style="background:${sc.bg};color:${sc.text}">
-        <span class="chip-dot" style="background:${sc.dot}"></span>${v.status}
-      </span>
-      <span class="chip" style="background:${pc.bg};color:${pc.text}">${v.priority}</span>
-    </div>
-    <div>
-      ${v.salary ? `<div class="detail-row"><span class="detail-key">Зарплата</span><span class="detail-val">${v.salary}</span></div>` : ''}
-      <div class="detail-row"><span class="detail-key">Дедлайн</span><span class="detail-val">${formatDate(v.deadline)}</span></div>
-      <div class="detail-row"><span class="detail-key">Кандидаты</span><span class="detail-val">${v.candidates}</span></div>
-      ${v.notes ? `<div class="detail-row"><span class="detail-key">Заметки</span><span class="detail-val">${v.notes}</span></div>` : ''}
-    </div>
-  `;
-  document.getElementById('detail-edit-btn').onclick = () => { closeAll(); setTimeout(() => openEdit(id), 50); };
-  openSheet('detail-sheet');
-}
-
-function openAdd() {
-  editingId = null;
-  document.getElementById('form-title').textContent = 'Новая вакансия';
-  document.getElementById('form-save-btn').textContent = 'Добавить';
-  document.getElementById('form-delete-slot').innerHTML = '';
-  document.getElementById('f-title').value = '';
-  document.getElementById('f-dept').value = 'IT';
-  document.getElementById('f-city').value = '';
-  document.getElementById('f-salary').value = '';
-  document.getElementById('f-status').value = 'Открыта';
-  document.getElementById('f-priority').value = 'Средний';
-  document.getElementById('f-candidates').value = '0';
-  document.getElementById('f-deadline').value = '';
-  document.getElementById('f-notes').value = '';
-  openSheet('form-sheet');
-  setTimeout(() => document.getElementById('f-title').focus(), 350);
-}
-
-function openEdit(id) {
-  const v = vacancies.find(x => x.id === id);
-  if (!v) return;
-  editingId = id;
-  document.getElementById('form-title').textContent = 'Редактировать';
-  document.getElementById('form-save-btn').textContent = 'Сохранить';
-  document.getElementById('form-delete-slot').innerHTML =
-    `<button class="btn-delete" onclick="deleteVacancy(${id})">Удалить вакансию</button>`;
-  document.getElementById('f-title').value = v.title;
-  document.getElementById('f-dept').value = v.department;
-  document.getElementById('f-city').value = v.city;
-  document.getElementById('f-salary').value = v.salary;
-  document.getElementById('f-status').value = v.status;
-  document.getElementById('f-priority').value = v.priority;
-  document.getElementById('f-candidates').value = v.candidates;
-  document.getElementById('f-deadline').value = v.deadline || '';
-  document.getElementById('f-notes').value = v.notes || '';
-  openSheet('form-sheet');
-}
-
-function saveForm() {
-  const title = document.getElementById('f-title').value.trim();
-  if (!title) { document.getElementById('f-title').focus(); return; }
-  const v = {
-    title,
-    department: document.getElementById('f-dept').value,
-    city: document.getElementById('f-city').value.trim(),
-    salary: document.getElementById('f-salary').value.trim(),
-    status: document.getElementById('f-status').value,
-    priority: document.getElementById('f-priority').value,
-    candidates: parseInt(document.getElementById('f-candidates').value) || 0,
-    deadline: document.getElementById('f-deadline').value,
-    notes: document.getElementById('f-notes').value.trim(),
-  };
-  if (editingId === null) {
-    vacancies.push({ ...v, id: Date.now() });
-  } else {
-    vacancies = vacancies.map(x => x.id === editingId ? { ...v, id: editingId } : x);
-  }
-  save();
-  closeAll();
-  renderCards();
-  if (tg) tg.HapticFeedback.notificationOccurred('success');
-}
-
-function deleteVacancy(id) {
-  if (tg) {
-    tg.showConfirm('Удалить вакансию?', (ok) => { if (ok) { doDelete(id); } });
-  } else {
-    if (confirm('Удалить вакансию?')) doDelete(id);
-  }
-}
-
-function doDelete(id) {
-  vacancies = vacancies.filter(v => v.id !== id);
-  save();
-  closeAll();
-  renderCards();
-  if (tg) tg.HapticFeedback.notificationOccurred('warning');
-}
-
+function render() {
 renderStats();
-renderFilters();
-renderCards();
+updateDropdowns();
+const data = getFiltered();
+document.getElementById('content').innerHTML = currentView === 'table' ?
+renderTable(data) : renderKanban(data);
+}
+// Modal
+function openAdd() {
+editingId = null;
+document.getElementById('modal-title').textContent = 'Новая вакансия';
+document.getElementById('modal-save-btn').textContent = 'Добавить';
+document.getElementById('modal-delete-btn').innerHTML = '';
+['f-hotel'
+,
+'f-job'
+'f-rate'
+'f-schedule'
+,
+,
+,
+'f-languages'
+,
+'f-notes'].forEach(id =>
+document.getElementById(id).value = '');
+document.getElementById('modal-overlay').classList.remove('hidden');
+document.getElementById('f-hotel').focus();
+}
+function openEdit(id) {
+const v = vacancies.find(x => x.id === id);
+if (!v) return;
+editingId = id;
+document.getElementById('modal-title').textContent = 'Редактировать';
+document.getElementById('modal-save-btn').textContent = 'Сохранить';
+document.getElementById('modal-delete-btn').innerHTML =
+`<button class="btn-danger"
+onclick="deleteVacancy(${id})">Удалить</button>`
+;
+document.getElementById('f-hotel').value = v.hotel;
+document.getElementById('f-job').value = v.job;
+document.getElementById('f-rate').value = v.rate;
+document.getElementById('f-schedule').value = v.schedule;
+document.getElementById('f-languages').value = v.languages;
+document.getElementById('f-notes').value = v.notes;
+document.getElementById('modal-overlay').classList.remove('hidden');
+}
+function closeModal() { document.getElementById('modal-overlay').classList.add('hidden'); }
+function handleOverlayClick(e) { if (e.target === document.getElementById('modal-overlay'))
+closeModal(); }
+function saveForm() {
+const hotel = document.getElementById('f-hotel').value.trim();
+const job = document.getElementById('f-job').value.trim();
+if (!hotel || !job) { alert('Заполни название отеля и должность'); return; }
+const v = { hotel, job,
+rate: document.getElementById('f-rate').value.trim(),
+schedule: document.getElementById('f-schedule').value.trim(),
+languages: document.getElementById('f-languages').value.trim(),
+notes: document.getElementById('f-notes').value.trim(),
+};
+if (editingId === null) {
+vacancies.push({ ...v, id: Date.now() });
+} else {
+vacancies = vacancies.map(x => x.id === editingId ? { ...v, id: editingId } : x);
+}
+save(); closeModal(); render();
+}
+function deleteVacancy(id) {
+if (!confirm('Удалить вакансию?')) return;
+vacancies = vacancies.filter(v => v.id !== id);
+save(); closeModal(); render();
+}
+render();
 </script>
 </body>
 </html>
