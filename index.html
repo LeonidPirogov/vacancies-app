@@ -10,11 +10,10 @@
   body { font-family: 'DM Sans', 'Segoe UI', sans-serif; background: #f7f6f3; color: #1a1a1a; min-height: 100vh; }
   button { cursor: pointer; font-family: inherit; }
   input, select, textarea { font-family: inherit; }
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-thumb { background: #d0cec9; border-radius: 3px; }
 
-  /* SYNC BANNER */
-  .sync-banner { display: flex; align-items: center; gap: 8px; padding: 8px 32px; font-size: 13px; font-weight: 500; transition: all .3s; }
+  .sync-banner { display: flex; align-items: center; gap: 8px; padding: 8px 32px; font-size: 13px; font-weight: 500; }
   .sync-banner.loading { background: #fff8e1; color: #e65100; }
   .sync-banner.ok      { background: #e8f5e9; color: #2e7d32; }
   .sync-banner.error   { background: #fdecea; color: #c62828; }
@@ -24,15 +23,18 @@
   .sync-banner.error   .sync-dot { background: #e53935; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
 
-  .header { background: #fff; border-bottom: 1.5px solid #f0eeeb; padding: 0 32px; }
+  .header { background: #fff; border-bottom: 1.5px solid #f0eeeb; padding: 0 20px; }
   .header-inner { max-width: 1300px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 64px; }
   .logo { display: flex; align-items: center; gap: 12px; }
   .logo-icon { width: 34px; height: 34px; background: #1a1a1a; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
   .logo-text { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; letter-spacing: -0.5px; }
+  .header-right { display: flex; align-items: center; gap: 10px; }
+  .admin-badge { background: #1a1a1a; color: #fff; border-radius: 8px; padding: 4px 12px; font-size: 12px; font-weight: 600; }
+  .viewer-badge { background: #f0eeeb; color: #888; border-radius: 8px; padding: 4px 12px; font-size: 12px; font-weight: 600; }
 
-  .main { max-width: 1300px; margin: 0 auto; padding: 28px 32px; }
-
+  .main { max-width: 1300px; margin: 0 auto; padding: 28px 20px; }
   .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 28px; }
+  @media(max-width:600px){ .stats { grid-template-columns: repeat(2,1fr); } }
   .stat-card { border: 1.5px solid #f0eeeb; border-radius: 14px; padding: 18px 22px; }
   .stat-value { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 28px; }
   .stat-label { font-size: 12px; color: #888; font-weight: 500; margin-top: 2px; }
@@ -41,37 +43,38 @@
   .search-input { padding: 9px 13px; border: 1.5px solid #e0ddd8; border-radius: 9px; font-size: 14px; outline: none; background: #fff; width: 200px; transition: border-color .15s; }
   .search-input:focus { border-color: #1a1a1a; }
   .filter-select { padding: 8px 13px; border: 1.5px solid #e0ddd8; border-radius: 9px; font-size: 13px; outline: none; background: #fff; color: #444; cursor: pointer; }
-  .filter-select:focus { border-color: #1a1a1a; }
   .view-toggle { margin-left: auto; display: flex; gap: 4px; background: #f0eeeb; border-radius: 10px; padding: 4px; }
   .tab-btn { padding: 7px 18px; border-radius: 8px; border: none; font-size: 13px; font-weight: 500; transition: all .15s; background: transparent; color: #888; }
   .tab-btn.active { background: #1a1a1a; color: #fff; }
   .tab-btn:not(.active):hover { background: #e5e3e0; color: #333; }
 
   .table-wrap { background: #fff; border-radius: 16px; border: 1.5px solid #f0eeeb; overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; min-width: 700px; }
+  table { width: 100%; border-collapse: collapse; min-width: 600px; }
   thead tr { background: #faf9f7; border-bottom: 1.5px solid #f0eeeb; }
   th { padding: 12px 16px; text-align: left; font-size: 11px; font-weight: 700; color: #aaa; text-transform: uppercase; letter-spacing: .5px; white-space: nowrap; }
-  tbody tr { border-bottom: 1px solid #f5f4f1; transition: background .1s; cursor: pointer; }
+  tbody tr { border-bottom: 1px solid #f5f4f1; transition: background .1s; }
   tbody tr:last-child { border-bottom: none; }
-  tbody tr:hover { background: #f9f8f6; }
+  tbody tr.clickable { cursor: pointer; }
+  tbody tr.clickable:hover { background: #f9f8f6; }
   td { padding: 12px 16px; font-size: 14px; vertical-align: middle; }
-  .td-hotel { font-weight: 700; font-size: 14px; }
+  .td-hotel { font-weight: 700; }
   .td-rate { font-weight: 700; color: #2e7d32; font-size: 13px; white-space: nowrap; }
   .td-sec { color: #666; font-size: 13px; }
 
   .kanban-wrap { overflow-x: auto; padding-bottom: 8px; }
   .kanban { display: flex; gap: 14px; align-items: flex-start; min-width: max-content; }
-  .kanban-col { width: 230px; background: #faf9f7; border-radius: 16px; padding: 14px; border: 1.5px solid #f0eeeb; flex-shrink: 0; }
+  .kanban-col { width: 230px; background: #faf9f7; border-radius: 16px; padding: 14px; border: 1.5px solid #f0eeeb; }
   .kanban-col-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
-  .kanban-col-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  .kanban-col-dot { width: 9px; height: 9px; border-radius: 50%; }
   .kanban-col-title { font-weight: 700; font-size: 13px; flex: 1; }
   .kanban-col-count { border-radius: 20px; padding: 2px 8px; font-size: 11px; font-weight: 700; }
-  .kanban-card { background: #fff; border-radius: 12px; padding: 12px; margin-bottom: 8px; box-shadow: 0 1px 4px rgba(0,0,0,.06); border: 1.5px solid #f0eeeb; transition: box-shadow .15s; cursor: pointer; }
+  .kanban-card { background: #fff; border-radius: 12px; padding: 12px; margin-bottom: 8px; box-shadow: 0 1px 4px rgba(0,0,0,.06); border: 1.5px solid #f0eeeb; transition: box-shadow .15s; }
+  .kanban-card.clickable { cursor: pointer; }
+  .kanban-card.clickable:hover { box-shadow: 0 4px 16px rgba(0,0,0,.10); }
   .kanban-card:last-child { margin-bottom: 0; }
-  .kanban-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.10); }
   .kanban-card-hotel { font-weight: 700; font-size: 13px; margin-bottom: 4px; }
   .kanban-card-job { font-size: 12px; color: #555; margin-bottom: 8px; }
-  .kanban-card-footer { display: flex; justify-content: space-between; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .kanban-card-footer { display: flex; justify-content: space-between; align-items: center; }
   .kanban-rate { font-weight: 700; color: #2e7d32; font-size: 12px; }
   .kanban-schedule { font-size: 11px; color: #aaa; }
 
@@ -84,14 +87,17 @@
   .btn-ghost:hover { border-color: #aaa; color: #333; }
   .btn-danger { background: #fdecea; color: #c62828; border: none; border-radius: 10px; padding: 10px 16px; font-size: 14px; font-weight: 600; }
   .btn-danger:hover { opacity: .8; }
+  .btn-link { background: none; border: none; color: #888; font-size: 13px; text-decoration: underline; padding: 4px; }
+  .btn-link:hover { color: #333; }
 
-  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.4); display: flex; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(2px); }
+  /* Login modal */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: flex; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(3px); }
   .modal-overlay.hidden { display: none; }
-  .modal { background: #fff; border-radius: 18px; padding: 32px; width: 540px; max-width: 95vw; max-height: 90vh; overflow-y: auto; }
+  .modal { background: #fff; border-radius: 20px; padding: 36px; width: 400px; max-width: 94vw; }
   .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-  .modal-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; }
-  .modal-close { background: none; border: none; font-size: 24px; color: #bbb; line-height: 1; cursor: pointer; }
-  .modal-footer { display: flex; justify-content: space-between; margin-top: 24px; }
+  .modal-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; }
+  .modal-close { background: none; border: none; font-size: 26px; color: #bbb; line-height: 1; cursor: pointer; }
+  .modal-footer { display: flex; justify-content: space-between; margin-top: 24px; align-items: center; }
   .modal-footer-right { display: flex; gap: 10px; }
   .form-grid { display: grid; gap: 14px; }
   .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -99,83 +105,75 @@
   .form-input { width: 100%; padding: 9px 13px; border: 1.5px solid #e0ddd8; border-radius: 9px; font-size: 14px; outline: none; background: #faf9f7; transition: border-color .15s; }
   .form-input:focus { border-color: #1a1a1a; background: #fff; }
   textarea.form-input { resize: vertical; }
-  .no-results { padding: 40px; text-align: center; color: #bbb; font-size: 14px; }
+  .form-error { color: #c62828; font-size: 13px; margin-top: 4px; }
 
-  /* Firebase config panel */
-  .config-panel { background: #fff; border: 2px dashed #e0ddd8; border-radius: 16px; padding: 32px; max-width: 600px; margin: 40px auto; }
-  .config-panel h2 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; margin-bottom: 8px; }
-  .config-panel p { color: #666; font-size: 14px; margin-bottom: 20px; line-height: 1.6; }
-  .config-panel textarea { width: 100%; height: 200px; border: 1.5px solid #e0ddd8; border-radius: 9px; padding: 12px; font-size: 13px; font-family: monospace; outline: none; resize: vertical; }
-  .config-panel .hint { font-size: 12px; color: #aaa; margin-top: 8px; }
+  .no-results { padding: 40px; text-align: center; color: #bbb; font-size: 14px; }
 </style>
 </head>
 <body>
 
-<!-- ⚠️ CONFIG PANEL — скрывается после подключения -->
-<div id="config-panel" class="config-panel" style="display:none">
-  <h2>🔥 Подключи Firebase</h2>
-  <p>Вставь сюда объект <code>firebaseConfig</code> из консоли Firebase<br>
-  (<b>Project Settings → Your apps → SDK setup</b>):</p>
-  <textarea id="config-input" placeholder='{
-  "apiKey": "AIza...",
-  "authDomain": "my-project.firebaseapp.com",
-  "projectId": "my-project",
-  "storageBucket": "my-project.appspot.com",
-  "messagingSenderId": "123456789",
-  "appId": "1:123:web:abc"
-}'></textarea>
-  <p class="hint">Конфиг сохраняется в localStorage браузера</p>
-  <div style="margin-top:16px;display:flex;gap:10px">
-    <button class="btn-primary" onclick="applyConfig()">Подключить</button>
-    <button class="btn-ghost" onclick="showApp()">Пропустить (оффлайн)</button>
-  </div>
-  <p id="config-error" style="color:#c62828;font-size:13px;margin-top:10px"></p>
-</div>
-
-<!-- SYNC BANNER -->
-<div class="sync-banner loading" id="sync-banner" style="display:none">
+<div class="sync-banner loading" id="sync-banner">
   <span class="sync-dot"></span>
-  <span id="sync-text">Подключение к Firebase…</span>
+  <span id="sync-text">Подключение…</span>
 </div>
 
-<!-- APP -->
-<div id="app" style="display:none">
-  <div class="header">
-    <div class="header-inner">
-      <div class="logo">
-        <div class="logo-icon">🏨</div>
-        <span class="logo-text">Вакансии</span>
-      </div>
-      <div style="display:flex;gap:10px;align-items:center">
-        <button class="btn-ghost" style="font-size:12px" onclick="disconnectFirebase()" id="btn-disconnect" title="Отключить Firebase">⚙️ Firebase</button>
-        <button class="btn-primary" onclick="openAdd()" id="btn-add">
-          <span style="font-size:16px;line-height:1">+</span> Добавить вакансию
-        </button>
-      </div>
+<div class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">🏨</div>
+      <span class="logo-text">Вакансии</span>
     </div>
-  </div>
-
-  <div class="main">
-    <div class="stats" id="stats"></div>
-    <div class="controls">
-      <input class="search-input" type="text" id="search" placeholder="🔍  Поиск…" oninput="render()">
-      <select class="filter-select" id="filter-hotel" onchange="render()"><option value="">Все отели</option></select>
-      <select class="filter-select" id="filter-job" onchange="render()"><option value="">Все должности</option></select>
-      <div class="view-toggle">
-        <button class="tab-btn active" id="tab-table" onclick="setView('table')">☰ Таблица</button>
-        <button class="tab-btn" id="tab-kanban" onclick="setView('kanban')">⊞ Канбан</button>
-      </div>
+    <div class="header-right" id="header-right">
+      <!-- populated by JS -->
     </div>
-    <div id="content"></div>
   </div>
 </div>
 
-<!-- Modal -->
-<div class="modal-overlay hidden" id="modal-overlay" onclick="handleOverlayClick(event)">
+<div class="main">
+  <div class="stats" id="stats"></div>
+  <div class="controls">
+    <input class="search-input" type="text" id="search" placeholder="🔍  Поиск…" oninput="render()">
+    <select class="filter-select" id="filter-hotel" onchange="render()"><option value="">Все отели</option></select>
+    <select class="filter-select" id="filter-job" onchange="render()"><option value="">Все должности</option></select>
+    <div class="view-toggle">
+      <button class="tab-btn active" id="tab-table" onclick="setView('table')">☰ Таблица</button>
+      <button class="tab-btn" id="tab-kanban" onclick="setView('kanban')">⊞ Канбан</button>
+    </div>
+  </div>
+  <div id="content"></div>
+</div>
+
+<!-- Login modal -->
+<div class="modal-overlay hidden" id="login-modal">
   <div class="modal">
     <div class="modal-header">
-      <span class="modal-title" id="modal-title">Новая вакансия</span>
-      <button class="modal-close" onclick="closeModal()">×</button>
+      <span class="modal-title">🔐 Вход для админа</span>
+      <button class="modal-close" onclick="closeLogin()">×</button>
+    </div>
+    <div class="form-grid">
+      <div>
+        <label class="form-label">Логин</label>
+        <input class="form-input" id="l-user" placeholder="Логин" autocomplete="username">
+      </div>
+      <div>
+        <label class="form-label">Пароль</label>
+        <input class="form-input" id="l-pass" type="password" placeholder="Пароль" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <div id="login-error" class="form-error"></div>
+    </div>
+    <div style="margin-top:20px;display:flex;justify-content:flex-end;gap:10px">
+      <button class="btn-ghost" onclick="closeLogin()">Отмена</button>
+      <button class="btn-primary" onclick="doLogin()">Войти</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit/Add modal (admin only) -->
+<div class="modal-overlay hidden" id="edit-modal" onclick="handleEditOverlay(event)">
+  <div class="modal" style="width:540px">
+    <div class="modal-header">
+      <span class="modal-title" id="edit-modal-title">Новая вакансия</span>
+      <button class="modal-close" onclick="closeEditModal()">×</button>
     </div>
     <div class="form-grid">
       <div>
@@ -191,11 +189,11 @@
       <div class="form-row-2">
         <div>
           <label class="form-label">Ставка в час (₪)</label>
-          <input class="form-input" id="f-rate" placeholder="Например: 45-50">
+          <input class="form-input" id="f-rate" placeholder="45-50">
         </div>
         <div>
           <label class="form-label">График</label>
-          <input class="form-input" id="f-schedule" placeholder="Например: утро, сменный">
+          <input class="form-input" id="f-schedule" placeholder="утро, сменный">
         </div>
       </div>
       <div>
@@ -204,24 +202,44 @@
       </div>
       <div>
         <label class="form-label">Заметки</label>
-        <textarea class="form-input" id="f-notes" rows="3" placeholder="Дополнительные требования…"></textarea>
+        <textarea class="form-input" id="f-notes" rows="3"></textarea>
       </div>
     </div>
     <div class="modal-footer">
       <div id="modal-delete-btn"></div>
       <div class="modal-footer-right">
-        <button class="btn-ghost" onclick="closeModal()">Отмена</button>
+        <button class="btn-ghost" onclick="closeEditModal()">Отмена</button>
         <button class="btn-primary" onclick="saveForm()" id="modal-save-btn">Добавить</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Firebase SDK -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-firestore-compat.min.js"></script>
 
 <script>
+// ─── FIREBASE CONFIG (hardcoded) ──────────────────────────────
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyDgT8JEGLeeYzgqbBVIQTaKZwBxy802Bfk",
+  authDomain: "maagalshenidatabase.firebaseapp.com",
+  projectId: "maagalshenidatabase",
+  storageBucket: "maagalshenidatabase.firebasestorage.app",
+  messagingSenderId: "423768573173",
+  appId: "1:423768573173:web:0828a0bf4082a0ebb371bc"
+};
+
+// ─── ADMIN CREDENTIALS ────────────────────────────────────────
+const ADMIN_USER = 'alina';
+const ADMIN_PASS = '1212';
+
+// ─── STATE ────────────────────────────────────────────────────
+let vacancies = [];
+let isAdmin = false;
+let editingId = null;
+let currentView = 'table';
+let db = null;
+
 // ─── CATEGORIES ───────────────────────────────────────────────
 const CATEGORIES = [
   { key:"Кухня",    label:"🍳 Кухня",        bg:"#fff8e1", text:"#e65100", dot:"#ffa000", keywords:["повар","кондитер","бариста","посудомой","раннер","кухн"] },
@@ -234,17 +252,9 @@ const CATEGORIES = [
 ];
 function getCategory(job) {
   const j = (job||'').toLowerCase();
-  for (const cat of CATEGORIES) if (cat.keywords.some(k => j.includes(k))) return cat;
+  for (const cat of CATEGORIES) if (cat.keywords.some(k=>j.includes(k))) return cat;
   return CATEGORIES[CATEGORIES.length-1];
 }
-
-// ─── STATE ────────────────────────────────────────────────────
-let vacancies = [];
-let editingId = null;
-let currentView = 'table';
-let db = null;
-let unsubscribe = null;
-let useFirebase = false;
 
 // ─── SEED DATA ────────────────────────────────────────────────
 const DEFAULT_DATA = [
@@ -291,155 +301,96 @@ const DEFAULT_DATA = [
   {hotel:"Студия поваров",job:"Посудомойщик",rate:"10-20",schedule:"",languages:"",notes:""},
 ];
 
-// ─── FIREBASE ─────────────────────────────────────────────────
+// ─── SYNC BANNER ──────────────────────────────────────────────
 function setSyncBanner(state, text) {
   const b = document.getElementById('sync-banner');
-  b.style.display = 'flex';
   b.className = `sync-banner ${state}`;
   document.getElementById('sync-text').textContent = text;
 }
 
-async function initFirebase(config) {
+// ─── BOOT ─────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', async () => {
   try {
-    if (firebase.apps.length) firebase.apps[0].delete();
-    firebase.initializeApp(config);
+    firebase.initializeApp(FIREBASE_CONFIG);
     db = firebase.firestore();
-    // test connection
-    await db.collection('vacancies').limit(1).get();
-    return true;
+    await seedIfEmpty();
+    db.collection('vacancies').onSnapshot(snap => {
+      vacancies = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      render();
+      setSyncBanner('ok', `Синхронизировано · ${vacancies.length} вакансий`);
+    }, err => {
+      setSyncBanner('error', 'Ошибка: ' + err.message);
+    });
+    setSyncBanner('loading', 'Загрузка данных…');
   } catch(e) {
-    console.error(e);
-    return false;
+    setSyncBanner('error', 'Не удалось подключиться к Firebase');
   }
-}
-
-function startRealtimeSync() {
-  setSyncBanner('loading', 'Загрузка данных…');
-  unsubscribe = db.collection('vacancies').onSnapshot(snap => {
-    vacancies = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    render();
-    setSyncBanner('ok', `Синхронизировано · ${vacancies.length} вакансий`);
-  }, err => {
-    setSyncBanner('error', 'Ошибка соединения: ' + err.message);
-  });
-}
+  renderHeader();
+});
 
 async function seedIfEmpty() {
   const snap = await db.collection('vacancies').limit(1).get();
   if (!snap.empty) return;
   const batch = db.batch();
-  DEFAULT_DATA.forEach(v => {
-    const ref = db.collection('vacancies').doc();
-    batch.set(ref, v);
-  });
+  DEFAULT_DATA.forEach(v => batch.set(db.collection('vacancies').doc(), v));
   await batch.commit();
 }
 
-// ─── CONFIG PANEL ─────────────────────────────────────────────
-function applyConfig() {
-  let raw = document.getElementById('config-input').value.trim();
-  let cfg;
-  try {
-    // Strip JS variable declaration if present: const firebaseConfig = {...};
-    raw = raw.replace(/^.*?=\s*/, '').replace(/;?\s*$/, '');
-    // Convert JS object keys (unquoted) to JSON keys
-    raw = raw.replace(/([{,]\s*)([a-zA-Z_]\w*)\s*:/g, '$1"$2":');
-    cfg = JSON.parse(raw);
-    if (!cfg.apiKey || !cfg.projectId) throw new Error('Неполный конфиг — нет apiKey или projectId');
-  } catch(e) {
-    document.getElementById('config-error').textContent = '⚠️ ' + e.message;
-    return;
+// ─── AUTH ─────────────────────────────────────────────────────
+function renderHeader() {
+  document.getElementById('header-right').innerHTML = isAdmin
+    ? `<span class="admin-badge">👑 Алина</span>
+       <button class="btn-ghost" style="font-size:13px" onclick="openFirebaseSettings()">⚙️ Firebase</button>
+       <button class="btn-primary" onclick="openAdd()"><span style="font-size:16px;line-height:1">+</span> Добавить</button>
+       <button class="btn-ghost" style="font-size:13px" onclick="logout()">Выйти</button>`
+    : `<button class="btn-ghost" style="font-size:13px" onclick="openLogin()">⚙️ Firebase</button>
+       <button class="btn-primary" onclick="openAdd()"><span style="font-size:16px;line-height:1">+</span> Добавить</button>`;
+}
+
+function openLogin() {
+  document.getElementById('l-user').value = '';
+  document.getElementById('l-pass').value = '';
+  document.getElementById('login-error').textContent = '';
+  document.getElementById('login-modal').classList.remove('hidden');
+  setTimeout(() => document.getElementById('l-user').focus(), 50);
+}
+function closeLogin() { document.getElementById('login-modal').classList.add('hidden'); }
+
+function doLogin() {
+  const u = document.getElementById('l-user').value.trim();
+  const p = document.getElementById('l-pass').value;
+  if (u === ADMIN_USER && p === ADMIN_PASS) {
+    isAdmin = true;
+    closeLogin();
+    renderHeader();
+    openFirebaseSettings();
+  } else {
+    document.getElementById('login-error').textContent = '⚠️ Неверный логин или пароль';
   }
-  localStorage.setItem('fb_config_hotels', JSON.stringify(cfg));
-  bootWithFirebase(cfg);
 }
 
-async function bootWithFirebase(cfg) {
-  document.getElementById('config-panel').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  setSyncBanner('loading', 'Подключение к Firebase…');
-  document.getElementById('sync-banner').style.display = 'flex';
-  const ok = await initFirebase(cfg);
-  if (!ok) {
-    setSyncBanner('error', 'Не удалось подключиться. Проверь конфиг и правила Firestore.');
-    useFirebase = false;
-    vacancies = JSON.parse(localStorage.getItem('hr_hotels_offline') || '[]');
-    if (!vacancies.length) { vacancies = DEFAULT_DATA.map((v,i)=>({...v,id:String(i)})); }
-    render();
-    return;
-  }
-  useFirebase = true;
-  await seedIfEmpty();
-  startRealtimeSync();
+function logout() {
+  isAdmin = false;
+  renderHeader();
 }
 
-function showApp() {
-  document.getElementById('config-panel').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  document.getElementById('sync-banner').style.display = 'none';
-  useFirebase = false;
-  vacancies = JSON.parse(localStorage.getItem('hr_hotels_offline') || '[]');
-  if (!vacancies.length) { vacancies = DEFAULT_DATA.map((v,i)=>({...v,id:String(i+1)})); }
-  render();
+function openFirebaseSettings() {
+  alert('Firebase настройки:\nprojectId: ' + FIREBASE_CONFIG.projectId + '\n\nДля смены конфига отредактируй переменную FIREBASE_CONFIG в коде.');
 }
-
-function disconnectFirebase() {
-  localStorage.removeItem('fb_config_hotels');
-  if (unsubscribe) unsubscribe();
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('sync-banner').style.display = 'none';
-  document.getElementById('config-panel').style.display = 'block';
-  document.getElementById('config-input').value = '';
-  document.getElementById('config-error').textContent = '';
-}
-
-// ─── BOOT ─────────────────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', () => {
-  const saved = localStorage.getItem('fb_config_hotels');
-  if (saved) {
-    try { bootWithFirebase(JSON.parse(saved)); return; } catch(e) {}
-  }
-  document.getElementById('config-panel').style.display = 'block';
-});
 
 // ─── CRUD ─────────────────────────────────────────────────────
-async function addVacancy(v) {
-  if (useFirebase) {
-    await db.collection('vacancies').add(v);
-  } else {
-    vacancies.push({ ...v, id: String(Date.now()) });
-    saveOffline();
-    render();
-  }
-}
-async function updateVacancy(id, v) {
-  if (useFirebase) {
-    await db.collection('vacancies').doc(id).set(v);
-  } else {
-    vacancies = vacancies.map(x => x.id === id ? { ...v, id } : x);
-    saveOffline();
-    render();
-  }
-}
-async function deleteVacancyById(id) {
-  if (useFirebase) {
-    await db.collection('vacancies').doc(id).delete();
-  } else {
-    vacancies = vacancies.filter(v => v.id !== id);
-    saveOffline();
-    render();
-  }
-}
-function saveOffline() { localStorage.setItem('hr_hotels_offline', JSON.stringify(vacancies)); }
+async function addVacancy(v)         { await db.collection('vacancies').add(v); }
+async function updateVacancy(id, v)  { await db.collection('vacancies').doc(id).set(v); }
+async function deleteVacancyById(id) { await db.collection('vacancies').doc(id).delete(); }
 
 // ─── FILTERS ──────────────────────────────────────────────────
 function getFiltered() {
-  const q = (document.getElementById('search')||{value:''}).value.toLowerCase();
+  const q     = (document.getElementById('search')||{value:''}).value.toLowerCase();
   const hotel = (document.getElementById('filter-hotel')||{value:''}).value;
-  const job = (document.getElementById('filter-job')||{value:''}).value;
+  const job   = (document.getElementById('filter-job')||{value:''}).value;
   return vacancies.filter(v => {
     if (hotel && v.hotel !== hotel) return false;
-    if (job && v.job !== job) return false;
+    if (job   && v.job   !== job)   return false;
     if (q && !v.hotel.toLowerCase().includes(q) && !v.job.toLowerCase().includes(q) && !(v.notes||'').toLowerCase().includes(q)) return false;
     return true;
   });
@@ -448,24 +399,20 @@ function getFiltered() {
 function updateDropdowns() {
   const hotels = [...new Set(vacancies.map(v=>v.hotel))].sort();
   const jobs   = [...new Set(vacancies.map(v=>v.job))].sort();
-  const hotelSel = document.getElementById('filter-hotel');
-  const jobSel   = document.getElementById('filter-job');
-  if (!hotelSel) return;
-  const ch = hotelSel.value, cj = jobSel.value;
-  hotelSel.innerHTML = '<option value="">Все отели</option>'   + hotels.map(h=>`<option value="${h}"${h===ch?' selected':''}>${h}</option>`).join('');
-  jobSel.innerHTML   = '<option value="">Все должности</option>'+ jobs.map(j=>`<option value="${j}"${j===cj?' selected':''}>${j}</option>`).join('');
+  const hs = document.getElementById('filter-hotel'), js = document.getElementById('filter-job');
+  if (!hs) return;
+  const ch = hs.value, cj = js.value;
+  hs.innerHTML = '<option value="">Все отели</option>'    + hotels.map(h=>`<option${h===ch?' selected':''}>${h}</option>`).join('');
+  js.innerHTML = '<option value="">Все должности</option>'+ jobs.map(j=>`<option${j===cj?' selected':''}>${j}</option>`).join('');
   document.getElementById('hotel-list').innerHTML = hotels.map(h=>`<option value="${h}">`).join('');
   document.getElementById('job-list').innerHTML   = jobs.map(j=>`<option value="${j}">`).join('');
 }
 
 // ─── RENDER ───────────────────────────────────────────────────
 function renderStats() {
-  const el = document.getElementById('stats');
-  if (!el) return;
-  const total   = vacancies.length;
-  const hotels  = new Set(vacancies.map(v=>v.hotel)).size;
-  const jobs    = new Set(vacancies.map(v=>v.job)).size;
-  const withRate= vacancies.filter(v=>v.rate).length;
+  const el = document.getElementById('stats'); if (!el) return;
+  const total = vacancies.length, hotels = new Set(vacancies.map(v=>v.hotel)).size,
+        jobs  = new Set(vacancies.map(v=>v.job)).size, withRate = vacancies.filter(v=>v.rate).length;
   el.innerHTML = [
     {label:"Всего вакансий",value:total,   color:"#1a1a1a",bg:"#fff"},
     {label:"Отелей",        value:hotels,  color:"#1565c0",bg:"#e3f2fd"},
@@ -481,12 +428,12 @@ function renderTable(data) {
   if (!data.length) return `<div class="table-wrap"><div class="no-results">Вакансии не найдены</div></div>`;
   return `<div class="table-wrap"><table>
     <thead><tr><th>Отель</th><th>Должность</th><th>Ставка/час</th><th>График</th><th>Языки</th><th>Заметки</th></tr></thead>
-    <tbody>${data.map(v=>{
-      const cat=getCategory(v.job);
-      return `<tr onclick="openEdit('${v.id}')">
+    <tbody>${data.map(v => {
+      const cat = getCategory(v.job);
+      return `<tr class="clickable" onclick="openEdit('${v.id}')">
         <td class="td-hotel">${v.hotel}</td>
         <td><span class="chip" style="background:${cat.bg};color:${cat.text}">${v.job}</span></td>
-        <td class="td-rate">${v.rate?v.rate+' ₪':'<span style="color:#ccc">—</span>'}</td>
+        <td class="td-rate">${v.rate ? v.rate+' ₪' : '<span style="color:#ccc">—</span>'}</td>
         <td class="td-sec">${v.schedule||'<span style="color:#ddd">—</span>'}</td>
         <td class="td-sec">${v.languages||'<span style="color:#ddd">—</span>'}</td>
         <td class="td-sec" style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${v.notes||''}</td>
@@ -497,7 +444,7 @@ function renderTable(data) {
 
 function renderKanban(data) {
   const cols = CATEGORIES.map(cat => {
-    const items = data.filter(v=>getCategory(v.job).key===cat.key);
+    const items = data.filter(v => getCategory(v.job).key === cat.key);
     if (!items.length) return '';
     return `<div class="kanban-col">
       <div class="kanban-col-header">
@@ -505,7 +452,7 @@ function renderKanban(data) {
         <span class="kanban-col-title">${cat.label}</span>
         <span class="kanban-col-count" style="background:${cat.bg};color:${cat.text}">${items.length}</span>
       </div>
-      ${items.map(v=>`<div class="kanban-card" onclick="openEdit('${v.id}')">
+      ${items.map(v=>`<div class="kanban-card clickable" onclick="openEdit('${v.id}')">
         <div class="kanban-card-hotel">${v.hotel}</div>
         <div class="kanban-card-job">${v.job}</div>
         <div class="kanban-card-footer">
@@ -521,7 +468,7 @@ function renderKanban(data) {
 
 function setView(v) {
   currentView = v;
-  document.getElementById('tab-table').className = 'tab-btn'+(v==='table'?' active':'');
+  document.getElementById('tab-table').className  = 'tab-btn'+(v==='table'?' active':'');
   document.getElementById('tab-kanban').className = 'tab-btn'+(v==='kanban'?' active':'');
   render();
 }
@@ -529,27 +476,26 @@ function setView(v) {
 function render() {
   renderStats();
   updateDropdowns();
-  const data = getFiltered();
   const el = document.getElementById('content');
-  if (el) el.innerHTML = currentView==='table' ? renderTable(data) : renderKanban(data);
+  if (el) el.innerHTML = currentView==='table' ? renderTable(getFiltered()) : renderKanban(getFiltered());
 }
 
-// ─── MODAL ────────────────────────────────────────────────────
+// ─── EDIT MODAL (admin only) ──────────────────────────────────
 function openAdd() {
   editingId = null;
-  document.getElementById('modal-title').textContent = 'Новая вакансия';
+  document.getElementById('edit-modal-title').textContent = 'Новая вакансия';
   document.getElementById('modal-save-btn').textContent = 'Добавить';
   document.getElementById('modal-delete-btn').innerHTML = '';
-  ['f-hotel','f-job','f-rate','f-schedule','f-languages','f-notes'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('modal-overlay').classList.remove('hidden');
-  setTimeout(()=>document.getElementById('f-hotel').focus(), 50);
+  ['f-hotel','f-job','f-rate','f-schedule','f-languages','f-notes'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('edit-modal').classList.remove('hidden');
+  setTimeout(() => document.getElementById('f-hotel').focus(), 50);
 }
 
 function openEdit(id) {
-  const v = vacancies.find(x=>x.id===id);
-  if (!v) return;
+  if (!isAdmin) return;
+  const v = vacancies.find(x => x.id === id); if (!v) return;
   editingId = id;
-  document.getElementById('modal-title').textContent = 'Редактировать';
+  document.getElementById('edit-modal-title').textContent = 'Редактировать';
   document.getElementById('modal-save-btn').textContent = 'Сохранить';
   document.getElementById('modal-delete-btn').innerHTML = `<button class="btn-danger" onclick="deleteVacancy('${id}')">Удалить</button>`;
   document.getElementById('f-hotel').value     = v.hotel||'';
@@ -558,11 +504,11 @@ function openEdit(id) {
   document.getElementById('f-schedule').value  = v.schedule||'';
   document.getElementById('f-languages').value = v.languages||'';
   document.getElementById('f-notes').value     = v.notes||'';
-  document.getElementById('modal-overlay').classList.remove('hidden');
+  document.getElementById('edit-modal').classList.remove('hidden');
 }
 
-function closeModal() { document.getElementById('modal-overlay').classList.add('hidden'); }
-function handleOverlayClick(e) { if (e.target===document.getElementById('modal-overlay')) closeModal(); }
+function closeEditModal() { document.getElementById('edit-modal').classList.add('hidden'); }
+function handleEditOverlay(e) { if (e.target === document.getElementById('edit-modal')) closeEditModal(); }
 
 async function saveForm() {
   const hotel = document.getElementById('f-hotel').value.trim();
@@ -579,15 +525,14 @@ async function saveForm() {
   try {
     if (editingId === null) await addVacancy(v);
     else await updateVacancy(editingId, v);
-    closeModal();
+    closeEditModal();
   } catch(e) { alert('Ошибка: ' + e.message); }
-  finally { btn.disabled = false; btn.textContent = editingId ? 'Сохранить' : 'Добавить'; }
+  finally { btn.disabled = false; }
 }
 
 async function deleteVacancy(id) {
-  if (!confirm('Удалить вакансию?')) return;
+  closeEditModal();
   await deleteVacancyById(id);
-  closeModal();
 }
 </script>
 </body>
