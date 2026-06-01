@@ -115,7 +115,14 @@
 </head>
 <body>
 
-<div class="sync-banner loading" id="sync-banner">
+<div id="firestore-hint" style="display:none;max-width:600px;margin:20px auto;background:#fff8e1;border:1.5px solid #ffe082;border-radius:14px;padding:20px 24px;font-size:14px;line-height:1.7">
+  <b>🔧 Как исправить — настройка правил Firestore:</b><br>
+  1. Открой <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a><br>
+  2. Выбери свой проект → <b>Firestore Database</b> → вкладка <b>Rules</b><br>
+  3. Замени всё содержимое на:<br>
+  <code style="display:block;background:#f5f5f5;padding:10px;border-radius:8px;margin:8px 0;font-size:13px">rules_version = '2';<br>service cloud.firestore {<br>&nbsp;&nbsp;match /databases/{database}/documents {<br>&nbsp;&nbsp;&nbsp;&nbsp;match /{document=**} {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;allow read, write: if true;<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>}</code>
+  4. Нажми <b>Publish</b> → обнови страницу сайта
+</div>
   <span class="sync-dot"></span>
   <span id="sync-text">Подключение…</span>
 </div>
@@ -335,17 +342,28 @@ window.addEventListener('DOMContentLoaded', async () => {
   try {
     firebase.initializeApp(FIREBASE_CONFIG);
     db = firebase.firestore();
+    setSyncBanner('loading', 'Загрузка данных…');
+
+    // Таймаут 8 секунд — если нет ответа, скорее всего блокируют правила Firestore
+    const timeout = setTimeout(() => {
+      setSyncBanner('error', '⚠️ Нет ответа от Firebase — проверь правила Firestore (см. инструкцию ниже)');
+      document.getElementById('firestore-hint').style.display = 'block';
+    }, 8000);
+
     await seedIfEmpty();
     db.collection('vacancies').onSnapshot(snap => {
+      clearTimeout(timeout);
+      document.getElementById('firestore-hint').style.display = 'none';
       vacancies = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       render();
       setSyncBanner('ok', `Синхронизировано · ${vacancies.length} вакансий`);
     }, err => {
+      clearTimeout(timeout);
       setSyncBanner('error', 'Ошибка: ' + err.message);
+      document.getElementById('firestore-hint').style.display = 'block';
     });
-    setSyncBanner('loading', 'Загрузка данных…');
   } catch(e) {
-    setSyncBanner('error', 'Не удалось подключиться к Firebase');
+    setSyncBanner('error', 'Ошибка инициализации: ' + e.message);
   }
   renderHeader();
 });
