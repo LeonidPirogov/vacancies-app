@@ -23,6 +23,9 @@
   .sync-banner.error   .sync-dot { background: #e53935; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
 
+  .firestore-hint { display:none; max-width:640px; margin:16px auto; background:#fff8e1; border:1.5px solid #ffe082; border-radius:14px; padding:18px 22px; font-size:13px; line-height:1.8; }
+  .firestore-hint code { display:block; background:#f5f5f5; padding:10px; border-radius:8px; margin:8px 0; font-size:12px; white-space:pre; }
+
   .header { background: #fff; border-bottom: 1.5px solid #f0eeeb; padding: 0 20px; }
   .header-inner { max-width: 1300px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 64px; }
   .logo { display: flex; align-items: center; gap: 12px; }
@@ -30,32 +33,29 @@
   .logo-text { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; letter-spacing: -0.5px; }
   .header-right { display: flex; align-items: center; gap: 10px; }
   .admin-badge { background: #1a1a1a; color: #fff; border-radius: 8px; padding: 4px 12px; font-size: 12px; font-weight: 600; }
-  .viewer-badge { background: #f0eeeb; color: #888; border-radius: 8px; padding: 4px 12px; font-size: 12px; font-weight: 600; }
 
   .main { max-width: 1300px; margin: 0 auto; padding: 28px 20px; }
-  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 28px; }
+  .stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 28px; }
   @media(max-width:600px){ .stats { grid-template-columns: repeat(2,1fr); } }
   .stat-card { border: 1.5px solid #f0eeeb; border-radius: 14px; padding: 18px 22px; }
   .stat-value { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 28px; }
   .stat-label { font-size: 12px; color: #888; font-weight: 500; margin-top: 2px; }
 
   .controls { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-  .search-input { padding: 9px 13px; border: 1.5px solid #e0ddd8; border-radius: 9px; font-size: 14px; outline: none; background: #fff; width: 200px; transition: border-color .15s; }
+  .search-input { padding: 9px 13px; border: 1.5px solid #e0ddd8; border-radius: 9px; font-size: 14px; outline: none; background: #fff; width: 200px; }
   .search-input:focus { border-color: #1a1a1a; }
   .filter-select { padding: 8px 13px; border: 1.5px solid #e0ddd8; border-radius: 9px; font-size: 13px; outline: none; background: #fff; color: #444; cursor: pointer; }
   .view-toggle { margin-left: auto; display: flex; gap: 4px; background: #f0eeeb; border-radius: 10px; padding: 4px; }
   .tab-btn { padding: 7px 18px; border-radius: 8px; border: none; font-size: 13px; font-weight: 500; transition: all .15s; background: transparent; color: #888; }
   .tab-btn.active { background: #1a1a1a; color: #fff; }
-  .tab-btn:not(.active):hover { background: #e5e3e0; color: #333; }
 
   .table-wrap { background: #fff; border-radius: 16px; border: 1.5px solid #f0eeeb; overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; min-width: 600px; }
   thead tr { background: #faf9f7; border-bottom: 1.5px solid #f0eeeb; }
   th { padding: 12px 16px; text-align: left; font-size: 11px; font-weight: 700; color: #aaa; text-transform: uppercase; letter-spacing: .5px; white-space: nowrap; }
-  tbody tr { border-bottom: 1px solid #f5f4f1; transition: background .1s; }
+  tbody tr { border-bottom: 1px solid #f5f4f1; transition: background .1s; cursor: pointer; }
   tbody tr:last-child { border-bottom: none; }
-  tbody tr.clickable { cursor: pointer; }
-  tbody tr.clickable:hover { background: #f9f8f6; }
+  tbody tr:hover { background: #f9f8f6; }
   td { padding: 12px 16px; font-size: 14px; vertical-align: middle; }
   .td-hotel { font-weight: 700; }
   .td-rate { font-weight: 700; color: #2e7d32; font-size: 13px; white-space: nowrap; }
@@ -68,9 +68,8 @@
   .kanban-col-dot { width: 9px; height: 9px; border-radius: 50%; }
   .kanban-col-title { font-weight: 700; font-size: 13px; flex: 1; }
   .kanban-col-count { border-radius: 20px; padding: 2px 8px; font-size: 11px; font-weight: 700; }
-  .kanban-card { background: #fff; border-radius: 12px; padding: 12px; margin-bottom: 8px; box-shadow: 0 1px 4px rgba(0,0,0,.06); border: 1.5px solid #f0eeeb; transition: box-shadow .15s; }
-  .kanban-card.clickable { cursor: pointer; }
-  .kanban-card.clickable:hover { box-shadow: 0 4px 16px rgba(0,0,0,.10); }
+  .kanban-card { background: #fff; border-radius: 12px; padding: 12px; margin-bottom: 8px; box-shadow: 0 1px 4px rgba(0,0,0,.06); border: 1.5px solid #f0eeeb; cursor: pointer; transition: box-shadow .15s; }
+  .kanban-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.10); }
   .kanban-card:last-child { margin-bottom: 0; }
   .kanban-card-hotel { font-weight: 700; font-size: 13px; margin-bottom: 4px; }
   .kanban-card-job { font-size: 12px; color: #555; margin-bottom: 8px; }
@@ -87,15 +86,13 @@
   .btn-ghost:hover { border-color: #aaa; color: #333; }
   .btn-danger { background: #fdecea; color: #c62828; border: none; border-radius: 10px; padding: 10px 16px; font-size: 14px; font-weight: 600; }
   .btn-danger:hover { opacity: .8; }
-  .btn-link { background: none; border: none; color: #888; font-size: 13px; text-decoration: underline; padding: 4px; }
-  .btn-link:hover { color: #333; }
 
-  /* Login modal */
   .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: flex; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(3px); }
   .modal-overlay.hidden { display: none; }
-  .modal { background: #fff; border-radius: 20px; padding: 36px; width: 400px; max-width: 94vw; }
+  .modal { background: #fff; border-radius: 20px; padding: 32px; width: 420px; max-width: 94vw; max-height: 90vh; overflow-y: auto; }
+  .modal-wide { width: 680px; }
   .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-  .modal-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; }
+  .modal-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; }
   .modal-close { background: none; border: none; font-size: 26px; color: #bbb; line-height: 1; cursor: pointer; }
   .modal-footer { display: flex; justify-content: space-between; margin-top: 24px; align-items: center; }
   .modal-footer-right { display: flex; gap: 10px; }
@@ -104,27 +101,35 @@
   .form-label { font-size: 11px; font-weight: 700; color: #aaa; margin-bottom: 5px; text-transform: uppercase; letter-spacing: .5px; display: block; }
   .form-input { width: 100%; padding: 9px 13px; border: 1.5px solid #e0ddd8; border-radius: 9px; font-size: 14px; outline: none; background: #faf9f7; transition: border-color .15s; }
   .form-input:focus { border-color: #1a1a1a; background: #fff; }
-  textarea.form-input { resize: vertical; }
-  .lang-option { display:inline-flex; align-items:center; gap:6px; font-size:14px; cursor:pointer; padding:8px 14px; border:1.5px solid #e0ddd8; border-radius:9px; background:#faf9f7; transition:all .15s; user-select:none; }
-  .lang-option:hover { border-color:#aaa; }
-  .lang-option.selected { border-color:#1a1a1a; background:#f0eeeb; font-weight:600; }
+  textarea.form-input { resize: vertical; white-space: pre-wrap; word-break: break-word; }
   .form-error { color: #c62828; font-size: 13px; margin-top: 4px; }
-
+  .lang-option { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; cursor: pointer; padding: 8px 14px; border: 1.5px solid #e0ddd8; border-radius: 9px; background: #faf9f7; transition: all .15s; user-select: none; }
+  .lang-option:hover { border-color: #aaa; }
+  .lang-option.selected { border-color: #1a1a1a; background: #f0eeeb; font-weight: 600; }
   .no-results { padding: 40px; text-align: center; color: #bbb; font-size: 14px; }
 </style>
 </head>
 <body>
 
-<div id="firestore-hint" style="display:none;max-width:600px;margin:20px auto;background:#fff8e1;border:1.5px solid #ffe082;border-radius:14px;padding:20px 24px;font-size:14px;line-height:1.7">
-  <b>🔧 Как исправить — настройка правил Firestore:</b><br>
-  1. Открой <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a><br>
-  2. Выбери свой проект → <b>Firestore Database</b> → вкладка <b>Rules</b><br>
-  3. Замени всё содержимое на:<br>
-  <code style="display:block;background:#f5f5f5;padding:10px;border-radius:8px;margin:8px 0;font-size:13px">rules_version = '2';<br>service cloud.firestore {<br>&nbsp;&nbsp;match /databases/{database}/documents {<br>&nbsp;&nbsp;&nbsp;&nbsp;match /{document=**} {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;allow read, write: if true;<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>}</code>
-  4. Нажми <b>Publish</b> → обнови страницу сайта
-</div>
+<div class="sync-banner loading" id="sync-banner">
   <span class="sync-dot"></span>
   <span id="sync-text">Подключение…</span>
+</div>
+
+<div class="firestore-hint" id="firestore-hint">
+  <b>🔧 Нет ответа от Firebase. Проверь:</b><br>
+  1. Открой <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a><br>
+  2. Проект → <b>Firestore Database</b> → вкладка <b>Rules</b><br>
+  3. Убедись что там написано:
+  <code>rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}</code>
+  4. Нажми <b>Publish</b> → обнови страницу
 </div>
 
 <div class="header">
@@ -133,9 +138,7 @@
       <div class="logo-icon">🏨</div>
       <span class="logo-text">Вакансии</span>
     </div>
-    <div class="header-right" id="header-right">
-      <!-- populated by JS -->
-    </div>
+    <div class="header-right" id="header-right"></div>
   </div>
 </div>
 
@@ -167,7 +170,7 @@
       </div>
       <div>
         <label class="form-label">Пароль</label>
-        <input class="form-input" id="l-pass" type="password" placeholder="Пароль" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+        <input class="form-input" id="l-pass" type="password" placeholder="Пароль" onkeydown="if(event.key==='Enter')doLogin()">
       </div>
       <div id="login-error" class="form-error"></div>
     </div>
@@ -178,23 +181,25 @@
   </div>
 </div>
 
-<!-- Edit/Add modal (admin only) -->
+<!-- Edit/Add modal -->
 <div class="modal-overlay hidden" id="edit-modal" onclick="handleEditOverlay(event)">
-  <div class="modal" style="width:540px">
+  <div class="modal modal-wide">
     <div class="modal-header">
       <span class="modal-title" id="edit-modal-title">Новая вакансия</span>
       <button class="modal-close" onclick="closeEditModal()">×</button>
     </div>
     <div class="form-grid">
-      <div>
-        <label class="form-label">Название отеля *</label>
-        <input class="form-input" id="f-hotel" placeholder="Например: Шератон" list="hotel-list">
-        <datalist id="hotel-list"></datalist>
-      </div>
-      <div>
-        <label class="form-label">Должность *</label>
-        <input class="form-input" id="f-job" placeholder="Например: Официант" list="job-list">
-        <datalist id="job-list"></datalist>
+      <div class="form-row-2">
+        <div>
+          <label class="form-label">Название отеля *</label>
+          <input class="form-input" id="f-hotel" placeholder="Например: Шератон" list="hotel-list">
+          <datalist id="hotel-list"></datalist>
+        </div>
+        <div>
+          <label class="form-label">Должность *</label>
+          <input class="form-input" id="f-job" placeholder="Например: Официант" list="job-list">
+          <datalist id="job-list"></datalist>
+        </div>
       </div>
       <div class="form-row-2">
         <div>
@@ -216,20 +221,20 @@
       <div>
         <label class="form-label">Языки</label>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px" id="lang-options">
-          <label class="lang-option" data-val="Иврит">🇮🇱 Иврит</label>
-          <label class="lang-option" data-val="Английский">🇬🇧 Английский</label>
-          <label class="lang-option" data-val="Иврит и Английский">🇮🇱🇬🇧 Иврит и Английский</label>
-          <label class="lang-option" data-val="">— Без языков</label>
+          <span class="lang-option" data-val="Иврит">🇮🇱 Иврит</span>
+          <span class="lang-option" data-val="Английский">🇬🇧 Английский</span>
+          <span class="lang-option" data-val="Иврит и Английский">🇮🇱🇬🇧 Иврит и Английский</span>
+          <span class="lang-option" data-val="">— Без языков</span>
         </div>
       </div>
       <div class="form-row-2">
         <div>
           <label class="form-label">Заметки</label>
-          <textarea class="form-input" id="f-notes" rows="6" style="resize:vertical"></textarea>
+          <textarea class="form-input" id="f-notes" rows="5" style="resize:vertical"></textarea>
         </div>
         <div>
           <label class="form-label">Объявление <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#bbb;font-size:11px">для соцсетей</span></label>
-          <textarea class="form-input" id="f-announcement" rows="6" placeholder="Текст объявления для Facebook или другой соцсети…" style="resize:vertical;white-space:pre-wrap;word-break:break-word"></textarea>
+          <textarea class="form-input" id="f-announcement" rows="5" placeholder="Текст объявления для Facebook…" style="resize:vertical"></textarea>
           <div style="text-align:right;font-size:11px;color:#ccc;margin-top:4px" id="announcement-counter">0 символов</div>
         </div>
       </div>
@@ -246,9 +251,7 @@
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-
 <script>
-// ─── FIREBASE CONFIG (hardcoded) ──────────────────────────────
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyDgT8JEGLeeYzgqbBVIQTaKZwBxy802Bfk",
   authDomain: "maagalshenidatabase.firebaseapp.com",
@@ -258,18 +261,15 @@ const FIREBASE_CONFIG = {
   appId: "1:423768573173:web:0828a0bf4082a0ebb371bc"
 };
 
-// ─── ADMIN CREDENTIALS ────────────────────────────────────────
 const ADMIN_USER = 'alina';
 const ADMIN_PASS = '1212';
 
-// ─── STATE ────────────────────────────────────────────────────
 let vacancies = [];
 let isAdmin = false;
 let editingId = null;
 let currentView = 'table';
 let db = null;
 
-// ─── CATEGORIES ───────────────────────────────────────────────
 const CATEGORIES = [
   { key:"Кухня",    label:"🍳 Кухня",        bg:"#fff8e1", text:"#e65100", dot:"#ffa000", keywords:["повар","кондитер","бариста","посудомой","раннер","кухн"] },
   { key:"Зал",      label:"🍽️ Зал",           bg:"#e8f5e9", text:"#2e7d32", dot:"#43a047", keywords:["официант","хостес","рум","кабат"] },
@@ -279,119 +279,118 @@ const CATEGORIES = [
   { key:"Охрана",   label:"🔒 Охрана",         bg:"#fafafa", text:"#424242", dot:"#757575", keywords:["охрана","security"] },
   { key:"Другое",   label:"📋 Другое",          bg:"#f0eeeb", text:"#555",   dot:"#aaa",    keywords:[] },
 ];
+
 function getCategory(job) {
   const j = (job||'').toLowerCase();
-  for (const cat of CATEGORIES) if (cat.keywords.some(k=>j.includes(k))) return cat;
-  return CATEGORIES[CATEGORIES.length-1];
+  for (const cat of CATEGORIES) {
+    if (cat.keywords.some(k => j.includes(k))) return cat;
+  }
+  return CATEGORIES[CATEGORIES.length - 1];
 }
 
-// ─── SEED DATA ────────────────────────────────────────────────
 const DEFAULT_DATA = [
-  {hotel:"Краун море",job:"Охрана (армия)",rate:"",schedule:"",languages:"",notes:""},
-  {hotel:"Кфар макабия",job:"Официант",rate:"42-45",schedule:"",languages:"",notes:""},
-  {hotel:"Кфар макабия",job:"Ресепшн",rate:"42-45",schedule:"",languages:"",notes:""},
-  {hotel:"Кфар макабия",job:"Иш ахзака кондиционерщик",rate:"60-65",schedule:"",languages:"",notes:""},
-  {hotel:"Шератон",job:"Повар",rate:"",schedule:"",languages:"",notes:""},
-  {hotel:"Шератон",job:"Ресепшн",rate:"",schedule:"",languages:"",notes:""},
-  {hotel:"Риц Карлтон",job:"Официант на завтрак",rate:"",schedule:"завтрак",languages:"",notes:"sales"},
-  {hotel:"Риц Карлтон",job:"Повар",rate:"",schedule:"",languages:"",notes:""},
-  {hotel:"Риц Карлтон",job:"Кондитер",rate:"",schedule:"",languages:"",notes:""},
-  {hotel:"Риц Карлтон",job:"Ресепшн спа",rate:"",schedule:"",languages:"",notes:""},
-  {hotel:"Риц Карлтон",job:"Хостес на завтраки",rate:"",schedule:"завтрак",languages:"",notes:""},
-  {hotel:"Джордж",job:"Официант",rate:"50",schedule:"",languages:"",notes:""},
-  {hotel:"Джордж",job:"Ресепшн/спа",rate:"45-47",schedule:"",languages:"",notes:""},
-  {hotel:"Джордж",job:"Ахзака",rate:"50-55",schedule:"",languages:"",notes:""},
-  {hotel:"Джордж",job:"Охрана",rate:"50-55",schedule:"",languages:"",notes:""},
-  {hotel:"Бейдилис",job:"Горничная",rate:"48",schedule:"",languages:"",notes:"2 места"},
-  {hotel:"Джаффа",job:"Официант",rate:"45",schedule:"",languages:"",notes:""},
-  {hotel:"Бобо",job:"Ресепшн",rate:"40-43",schedule:"",languages:"",notes:""},
-  {hotel:"Сетай",job:"Хостес",rate:"47",schedule:"",languages:"",notes:""},
-  {hotel:"Сетай",job:"Официант",rate:"45",schedule:"",languages:"",notes:""},
-  {hotel:"Сетай",job:"Иш ахзака",rate:"50",schedule:"",languages:"",notes:""},
-  {hotel:"Сетай",job:"Горничная",rate:"50",schedule:"",languages:"",notes:""},
-  {hotel:"Сетай",job:"Повар гриль",rate:"55",schedule:"9-18",languages:"",notes:""},
-  {hotel:"Сетай",job:"Повар ресторан",rate:"",schedule:"15-23",languages:"",notes:""},
-  {hotel:"Отель Яхт Герцлия",job:"Официант",rate:"42",schedule:"",languages:"",notes:""},
-  {hotel:"Дриско",job:"Штахим",rate:"50",schedule:"утро",languages:"",notes:""},
-  {hotel:"Норман",job:"Повар",rate:"50-53",schedule:"сменный",languages:"",notes:""},
-  {hotel:"Норман",job:"Электрик",rate:"",schedule:"",languages:"",notes:""},
-  {hotel:"Кфар макабия",job:"Горничная",rate:"",schedule:"",languages:"",notes:""},
-  {hotel:"Кфар макабия",job:"Ресепшн спортклуб",rate:"",schedule:"",languages:"",notes:""},
-  {hotel:"Кемпински",job:"Официант",rate:"55",schedule:"",languages:"",notes:""},
-  {hotel:"Джаффа",job:"Кабат",rate:"47",schedule:"",languages:"",notes:""},
-  {hotel:"Джаффа",job:"Электрик",rate:"65",schedule:"",languages:"",notes:""},
-  {hotel:"Джаффа",job:"Повар",rate:"53",schedule:"",languages:"",notes:""},
-  {hotel:"Джаффа",job:"Ресепшн",rate:"43",schedule:"",languages:"",notes:""},
-  {hotel:"Джаффа",job:"Бариста",rate:"50",schedule:"",languages:"",notes:""},
-  {hotel:"Джаффа",job:"Рум-сервис",rate:"45",schedule:"",languages:"",notes:""},
-  {hotel:"Джаффа",job:"Хостес",rate:"45",schedule:"",languages:"",notes:""},
-  {hotel:"Джаффа",job:"Горничная",rate:"50",schedule:"",languages:"",notes:""},
-  {hotel:"Студия поваров",job:"Раннер",rate:"",schedule:"8-17/14-00",languages:"",notes:""},
-  {hotel:"Студия поваров",job:"Посудомойщик",rate:"10-20",schedule:"",languages:"",notes:""},
+  {hotel:"Краун море",job:"Охрана (армия)",rate:"",schedule:"",languages:"",notes:"",announcement:""},
+  {hotel:"Кфар макабия",job:"Официант",rate:"42-45",schedule:"",languages:"",notes:"",announcement:""},
+  {hotel:"Кфар макабия",job:"Ресепшн",rate:"42-45",schedule:"",languages:"",notes:"",announcement:""},
+  {hotel:"Кфар макабия",job:"Иш ахзака кондиционерщик",rate:"60-65",schedule:"",languages:"",notes:"",announcement:""},
+  {hotel:"Шератон",job:"Повар",rate:"",schedule:"",languages:"",notes:"",announcement:""},
+  {hotel:"Шератон",job:"Ресепшн",rate:"",schedule:"",languages:"",notes:"",announcement:""},
+  {hotel:"Риц Карлтон",job:"Официант на завтрак",rate:"",schedule:"с 07:00 до 15:00",languages:"",notes:"sales",announcement:""},
+  {hotel:"Риц Карлтон",job:"Повар",rate:"",schedule:"",languages:"",notes:"",announcement:""},
+  {hotel:"Риц Карлтон",job:"Кондитер",rate:"",schedule:"",languages:"",notes:"",announcement:""},
+  {hotel:"Риц Карлтон",job:"Ресепшн спа",rate:"",schedule:"",languages:"",notes:"",announcement:""},
+  {hotel:"Риц Карлтон",job:"Хостес на завтраки",rate:"",schedule:"с 07:00 до 15:00",languages:"",notes:"",announcement:""},
+  {hotel:"Джордж",job:"Официант",rate:"50",schedule:"",languages:"",notes:"",announcement:""},
+  {hotel:"Джордж",job:"Ресепшн/спа",rate:"45-47",schedule:"",languages:"",notes:"",announcement:""},
+  {hotel:"Джордж",job:"Ахзака",rate:"50-55",schedule:"",languages:"",notes:"",announcement:""},
+  {hotel:"Джордж",job:"Охрана",rate:"50-55",schedule:"",languages:"",notes:"",announcement:""},
+  {hotel:"Бейдилис",job:"Горничная",rate:"48",schedule:"",languages:"",notes:"2 места",announcement:""},
+  {hotel:"Джаффа",job:"Официант",rate:"45",schedule:"",languages:"",notes:"",announcement:""},
+  {hotel:"Бобо",job:"Ресепшн",rate:"40-43",schedule:"",languages:"",notes:"",announcement:""},
+  {hotel:"Сетай",job:"Хостес",rate:"47",schedule:"",languages:"",notes:"",announcement:""},
+  {hotel:"Сетай",job:"Официант",rate:"45",schedule:"",languages:"",notes:"",announcement:""},
+  {hotel:"Сетай",job:"Иш ахзака",rate:"50",schedule:"",languages:"",notes:"",announcement:""},
+  {hotel:"Сетай",job:"Горничная",rate:"50",schedule:"",languages:"",notes:"",announcement:""},
+  {hotel:"Сетай",job:"Повар гриль",rate:"55",schedule:"с 07:00 до 16:00",languages:"",notes:"",announcement:""},
+  {hotel:"Сетай",job:"Повар ресторан",rate:"",schedule:"с 15:00 до 23:00",languages:"",notes:"",announcement:""},
+  {hotel:"Отель Яхт Герцлия",job:"Официант",rate:"42",schedule:"",languages:"",notes:"",announcement:""},
+  {hotel:"Дриско",job:"Штахим",rate:"50",schedule:"с 07:00 до 15:00",languages:"",notes:"",announcement:""},
+  {hotel:"Норман",job:"Повар",rate:"50-53",schedule:"",languages:"",notes:"",announcement:""},
+  {hotel:"Норман",job:"Электрик",rate:"",schedule:"",languages:"",notes:"",announcement:""},
+  {hotel:"Кфар макабия",job:"Горничная",rate:"",schedule:"",languages:"",notes:"",announcement:""},
+  {hotel:"Кфар макабия",job:"Ресепшн спортклуб",rate:"",schedule:"",languages:"",notes:"",announcement:""},
+  {hotel:"Кемпински",job:"Официант",rate:"55",schedule:"",languages:"",notes:"",announcement:""},
+  {hotel:"Джаффа",job:"Кабат",rate:"47",schedule:"",languages:"",notes:"",announcement:""},
+  {hotel:"Джаффа",job:"Электрик",rate:"65",schedule:"",languages:"",notes:"",announcement:""},
+  {hotel:"Джаффа",job:"Повар",rate:"53",schedule:"",languages:"",notes:"",announcement:""},
+  {hotel:"Джаффа",job:"Ресепшн",rate:"43",schedule:"",languages:"",notes:"",announcement:""},
+  {hotel:"Джаффа",job:"Бариста",rate:"50",schedule:"",languages:"",notes:"",announcement:""},
+  {hotel:"Джаффа",job:"Рум-сервис",rate:"45",schedule:"",languages:"",notes:"",announcement:""},
+  {hotel:"Джаффа",job:"Хостес",rate:"45",schedule:"",languages:"",notes:"",announcement:""},
+  {hotel:"Джаффа",job:"Горничная",rate:"50",schedule:"",languages:"",notes:"",announcement:""},
+  {hotel:"Студия поваров",job:"Раннер",rate:"",schedule:"",languages:"",notes:"",announcement:""},
+  {hotel:"Студия поваров",job:"Посудомойщик",rate:"10-20",schedule:"",languages:"",notes:"",announcement:""},
 ];
 
-// ─── SYNC BANNER ──────────────────────────────────────────────
+// ── SYNC BANNER ──────────────────────────────────────────────
 function setSyncBanner(state, text) {
   const b = document.getElementById('sync-banner');
-  b.className = `sync-banner ${state}`;
+  b.className = 'sync-banner ' + state;
   document.getElementById('sync-text').textContent = text;
 }
 
-// ─── BOOT ─────────────────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', async () => {
+// ── BOOT ─────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', function() {
+  renderHeader();
+
   try {
     firebase.initializeApp(FIREBASE_CONFIG);
     db = firebase.firestore();
-    setSyncBanner('loading', 'Загрузка данных…');
-
-    // Таймаут 8 секунд — если нет ответа, скорее всего блокируют правила Firestore
-    const timeout = setTimeout(() => {
-      setSyncBanner('error', '⚠️ Нет ответа от Firebase — обнови страницу или проверь консоль браузера (F12)');
-      document.getElementById('firestore-hint').style.display = 'block';
-    }, 8000);
-
-    // Сначала запускаем слушатель, seedIfEmpty вызываем после первого снапшота
-    let seeded = false;
-    db.collection('vacancies').onSnapshot(async snap => {
-      clearTimeout(timeout);
-      document.getElementById('firestore-hint').style.display = 'none';
-      if (!seeded && snap.empty) {
-        seeded = true;
-        await seedIfEmpty();
-        return;
-      }
-      seeded = true;
-      vacancies = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      render();
-      setSyncBanner('ok', `Синхронизировано · ${vacancies.length} вакансий`);
-    }, err => {
-      clearTimeout(timeout);
-      setSyncBanner('error', 'Ошибка: ' + err.message);
-      document.getElementById('firestore-hint').style.display = 'block';
-    });
   } catch(e) {
-    setSyncBanner('error', 'Ошибка инициализации: ' + e.message);
+    setSyncBanner('error', 'Ошибка инициализации Firebase: ' + e.message);
+    return;
   }
-  renderHeader();
+
+  setSyncBanner('loading', 'Загрузка данных…');
+
+  var timeout = setTimeout(function() {
+    setSyncBanner('error', '⚠️ Нет ответа — проверь правила Firestore');
+    document.getElementById('firestore-hint').style.display = 'block';
+  }, 8000);
+
+  var seeded = false;
+  db.collection('vacancies').onSnapshot(function(snap) {
+    clearTimeout(timeout);
+    document.getElementById('firestore-hint').style.display = 'none';
+
+    if (!seeded && snap.empty) {
+      seeded = true;
+      var batch = db.batch();
+      DEFAULT_DATA.forEach(function(v) {
+        batch.set(db.collection('vacancies').doc(), v);
+      });
+      batch.commit();
+      return;
+    }
+    seeded = true;
+    vacancies = snap.docs.map(function(d) { return Object.assign({ id: d.id }, d.data()); });
+    render();
+    setSyncBanner('ok', 'Синхронизировано · ' + vacancies.length + ' вакансий');
+  }, function(err) {
+    clearTimeout(timeout);
+    setSyncBanner('error', 'Ошибка: ' + err.message);
+    document.getElementById('firestore-hint').style.display = 'block';
+  });
 });
 
-async function seedIfEmpty() {
-  const snap = await db.collection('vacancies').limit(1).get();
-  if (!snap.empty) return;
-  const batch = db.batch();
-  DEFAULT_DATA.forEach(v => batch.set(db.collection('vacancies').doc(), v));
-  await batch.commit();
-}
-
-// ─── AUTH ─────────────────────────────────────────────────────
+// ── AUTH ─────────────────────────────────────────────────────
 function renderHeader() {
   document.getElementById('header-right').innerHTML = isAdmin
-    ? `<span class="admin-badge">👑 Алина</span>
-       <button class="btn-ghost" style="font-size:13px" onclick="openFirebaseSettings()">⚙️ Firebase</button>
-       <button class="btn-primary" onclick="openAdd()"><span style="font-size:16px;line-height:1">+</span> Добавить</button>
-       <button class="btn-ghost" style="font-size:13px" onclick="logout()">Выйти</button>`
-    : `<button class="btn-ghost" style="font-size:13px" onclick="openLogin()">⚙️ Firebase</button>
-       <button class="btn-primary" onclick="openAdd()"><span style="font-size:16px;line-height:1">+</span> Добавить</button>`;
+    ? '<span class="admin-badge">👑 Алина</span>'
+      + '<button class="btn-ghost" style="font-size:13px" onclick="logout()">Выйти</button>'
+      + '<button class="btn-primary" onclick="openAdd()"><span style="font-size:16px;line-height:1">+</span> Добавить</button>'
+    : '<button class="btn-ghost" style="font-size:13px" onclick="openLogin()">⚙️ Firebase</button>'
+      + '<button class="btn-primary" onclick="openAdd()"><span style="font-size:16px;line-height:1">+</span> Добавить</button>';
 }
 
 function openLogin() {
@@ -399,90 +398,17 @@ function openLogin() {
   document.getElementById('l-pass').value = '';
   document.getElementById('login-error').textContent = '';
   document.getElementById('login-modal').classList.remove('hidden');
-  setTimeout(() => document.getElementById('l-user').focus(), 50);
+  setTimeout(function() { document.getElementById('l-user').focus(); }, 50);
 }
 function closeLogin() { document.getElementById('login-modal').classList.add('hidden'); }
 
-// Init lang option clicks
-document.getElementById('lang-options').addEventListener('click', e => {
-  const opt = e.target.closest('.lang-option');
-  if (!opt) return;
-  document.querySelectorAll('.lang-option').forEach(el => el.classList.remove('selected'));
-  opt.classList.add('selected');
-});
-
-function getLanguagesValue() {
-  const sel = document.querySelector('.lang-option.selected');
-  return sel ? sel.dataset.val : '';
-}
-
-function setLanguagesValue(val) {
-  document.querySelectorAll('.lang-option').forEach(el => {
-    el.classList.toggle('selected', el.dataset.val === (val||''));
-  });
-}
-
-// Announcement character counter
-document.getElementById('f-announcement').addEventListener('input', function() {
-  document.getElementById('announcement-counter').textContent = this.value.length + ' символов';
-});
-
-function onScheduleChange() {
-  const sel = document.getElementById('f-schedule');
-  const custom = document.getElementById('f-schedule-custom');
-  custom.style.display = sel.value === 'другое' ? 'block' : 'none';
-  if (sel.value === 'другое') custom.focus();
-}
-
-function updateLangLabel(code) {
-  const checked = document.getElementById('lang-'+code).checked;
-  const lbl = document.getElementById('lang-'+code+'-lbl');
-  lbl.style.borderColor = checked ? '#1a1a1a' : '#e0ddd8';
-  lbl.style.background  = checked ? '#f0eeeb' : '#faf9f7';
-  lbl.style.fontWeight  = checked ? '600' : 'normal';
-}
-
-function getLanguagesValue() {
-  return ['he','ru','en']
-    .filter(c => document.getElementById('lang-'+c).checked)
-    .map(c => document.getElementById('lang-'+c).value)
-    .join(', ');
-}
-
-function setLanguagesValue(val) {
-  ['he','ru','en'].forEach(c => {
-    const cb = document.getElementById('lang-'+c);
-    cb.checked = val ? val.includes(cb.value) : false;
-    updateLangLabel(c);
-  });
-}
-
-function getScheduleValue() {
-  const sel = document.getElementById('f-schedule');
-  if (sel.value === 'другое') return document.getElementById('f-schedule-custom').value.trim();
-  return sel.value;
-}
-
-function setScheduleValue(val) {
-  const sel = document.getElementById('f-schedule');
-  const custom = document.getElementById('f-schedule-custom');
-  const known = ['', 'с 07:00 до 15:00', 'с 07:00 до 16:00', 'с 15:00 до 23:00'];
-  if (known.includes(val)) {
-    sel.value = val;
-    custom.style.display = 'none';
-  } else {
-    sel.value = 'другое';
-    custom.value = val;
-    custom.style.display = 'block';
-  }
-}
-  const u = document.getElementById('l-user').value.trim();
-  const p = document.getElementById('l-pass').value;
+function doLogin() {
+  var u = document.getElementById('l-user').value.trim();
+  var p = document.getElementById('l-pass').value;
   if (u === ADMIN_USER && p === ADMIN_PASS) {
     isAdmin = true;
     closeLogin();
     renderHeader();
-    openFirebaseSettings();
   } else {
     document.getElementById('login-error').textContent = '⚠️ Неверный логин или пароль';
   }
@@ -493,21 +419,17 @@ function logout() {
   renderHeader();
 }
 
-function openFirebaseSettings() {
-  alert('Firebase настройки:\nprojectId: ' + FIREBASE_CONFIG.projectId + '\n\nДля смены конфига отредактируй переменную FIREBASE_CONFIG в коде.');
-}
+// ── CRUD ─────────────────────────────────────────────────────
+function addVacancy(v)         { return db.collection('vacancies').add(v); }
+function updateVacancy(id, v)  { return db.collection('vacancies').doc(id).set(v); }
+function deleteVacancyById(id) { return db.collection('vacancies').doc(id).delete(); }
 
-// ─── CRUD ─────────────────────────────────────────────────────
-async function addVacancy(v)         { await db.collection('vacancies').add(v); }
-async function updateVacancy(id, v)  { await db.collection('vacancies').doc(id).set(v); }
-async function deleteVacancyById(id) { await db.collection('vacancies').doc(id).delete(); }
-
-// ─── FILTERS ──────────────────────────────────────────────────
+// ── FILTERS ──────────────────────────────────────────────────
 function getFiltered() {
-  const q     = (document.getElementById('search')||{value:''}).value.toLowerCase();
-  const hotel = (document.getElementById('filter-hotel')||{value:''}).value;
-  const job   = (document.getElementById('filter-job')||{value:''}).value;
-  return vacancies.filter(v => {
+  var q     = document.getElementById('search').value.toLowerCase();
+  var hotel = document.getElementById('filter-hotel').value;
+  var job   = document.getElementById('filter-job').value;
+  return vacancies.filter(function(v) {
     if (hotel && v.hotel !== hotel) return false;
     if (job   && v.job   !== job)   return false;
     if (q && !v.hotel.toLowerCase().includes(q) && !v.job.toLowerCase().includes(q) && !(v.notes||'').toLowerCase().includes(q)) return false;
@@ -516,149 +438,212 @@ function getFiltered() {
 }
 
 function updateDropdowns() {
-  const hotels = [...new Set(vacancies.map(v=>v.hotel))].sort();
-  const jobs   = [...new Set(vacancies.map(v=>v.job))].sort();
-  const hs = document.getElementById('filter-hotel'), js = document.getElementById('filter-job');
-  if (!hs) return;
-  const ch = hs.value, cj = js.value;
-  hs.innerHTML = '<option value="">Все отели</option>'    + hotels.map(h=>`<option${h===ch?' selected':''}>${h}</option>`).join('');
-  js.innerHTML = '<option value="">Все должности</option>'+ jobs.map(j=>`<option${j===cj?' selected':''}>${j}</option>`).join('');
-  document.getElementById('hotel-list').innerHTML = hotels.map(h=>`<option value="${h}">`).join('');
-  document.getElementById('job-list').innerHTML   = jobs.map(j=>`<option value="${j}">`).join('');
+  var hotels = [...new Set(vacancies.map(function(v){return v.hotel;}))].sort();
+  var jobs   = [...new Set(vacancies.map(function(v){return v.job;}))].sort();
+  var hs = document.getElementById('filter-hotel');
+  var js = document.getElementById('filter-job');
+  var ch = hs.value, cj = js.value;
+  hs.innerHTML = '<option value="">Все отели</option>'    + hotels.map(function(h){return '<option'+(h===ch?' selected':'')+'>'+h+'</option>';}).join('');
+  js.innerHTML = '<option value="">Все должности</option>'+ jobs.map(function(j){return '<option'+(j===cj?' selected':'')+'>'+j+'</option>';}).join('');
+  document.getElementById('hotel-list').innerHTML = hotels.map(function(h){return '<option value="'+h+'">';}).join('');
+  document.getElementById('job-list').innerHTML   = jobs.map(function(j){return '<option value="'+j+'">';}).join('');
 }
 
-// ─── RENDER ───────────────────────────────────────────────────
+// ── RENDER ───────────────────────────────────────────────────
 function renderStats() {
-  const el = document.getElementById('stats'); if (!el) return;
-  const total = vacancies.length, hotels = new Set(vacancies.map(v=>v.hotel)).size,
-        jobs  = new Set(vacancies.map(v=>v.job)).size, withRate = vacancies.filter(v=>v.rate).length;
-  el.innerHTML = [
-    {label:"Всего вакансий",value:total,   color:"#1a1a1a",bg:"#fff"},
-    {label:"Отелей",        value:hotels,  color:"#1565c0",bg:"#e3f2fd"},
-    {label:"Должностей",    value:jobs,    color:"#6a1b9a",bg:"#f3e5f5"},
-    {label:"Со ставкой",    value:withRate,color:"#2e7d32",bg:"#e8f5e9"},
-  ].map(c=>`<div class="stat-card" style="background:${c.bg}">
-    <div class="stat-value" style="color:${c.color}">${c.value}</div>
-    <div class="stat-label">${c.label}</div>
-  </div>`).join('');
+  var total    = vacancies.length;
+  var hotels   = new Set(vacancies.map(function(v){return v.hotel;})).size;
+  var jobs     = new Set(vacancies.map(function(v){return v.job;})).size;
+  var withRate = vacancies.filter(function(v){return v.rate;}).length;
+  document.getElementById('stats').innerHTML = [
+    {label:"Всего вакансий", value:total,    color:"#1a1a1a", bg:"#fff"},
+    {label:"Отелей",         value:hotels,   color:"#1565c0", bg:"#e3f2fd"},
+    {label:"Должностей",     value:jobs,     color:"#6a1b9a", bg:"#f3e5f5"},
+    {label:"Со ставкой",     value:withRate, color:"#2e7d32", bg:"#e8f5e9"},
+  ].map(function(c) {
+    return '<div class="stat-card" style="background:'+c.bg+'">'
+      + '<div class="stat-value" style="color:'+c.color+'">'+c.value+'</div>'
+      + '<div class="stat-label">'+c.label+'</div></div>';
+  }).join('');
 }
 
 function renderTable(data) {
-  if (!data.length) return `<div class="table-wrap"><div class="no-results">Вакансии не найдены</div></div>`;
-  return `<div class="table-wrap"><table>
-    <thead><tr><th>Отель</th><th>Должность</th><th>Ставка/час</th><th>График</th><th>Языки</th><th>Заметки</th></tr></thead>
-    <tbody>${data.map(v => {
-      const cat = getCategory(v.job);
-      return `<tr class="clickable" onclick="openEdit('${v.id}')">
-        <td class="td-hotel">${v.hotel}</td>
-        <td><span class="chip" style="background:${cat.bg};color:${cat.text}">${v.job}</span></td>
-        <td class="td-rate">${v.rate ? v.rate+' ₪' : '<span style="color:#ccc">—</span>'}</td>
-        <td class="td-sec">${v.schedule||'<span style="color:#ddd">—</span>'}</td>
-        <td class="td-sec">${v.languages||'<span style="color:#ddd">—</span>'}</td>
-        <td class="td-sec" style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${v.notes||''}</td>
-      </tr>`;
-    }).join('')}</tbody>
-  </table></div>`;
+  if (!data.length) return '<div class="table-wrap"><div class="no-results">Вакансии не найдены</div></div>';
+  return '<div class="table-wrap"><table>'
+    + '<thead><tr><th>Отель</th><th>Должность</th><th>Ставка/час</th><th>График</th><th>Языки</th><th>Заметки</th></tr></thead>'
+    + '<tbody>' + data.map(function(v) {
+      var cat = getCategory(v.job);
+      return '<tr onclick="openEdit(\''+v.id+'\')" style="cursor:pointer">'
+        + '<td class="td-hotel">'+v.hotel+'</td>'
+        + '<td><span class="chip" style="background:'+cat.bg+';color:'+cat.text+'">'+v.job+'</span></td>'
+        + '<td class="td-rate">'+(v.rate ? v.rate+' ₪' : '<span style="color:#ccc">—</span>')+'</td>'
+        + '<td class="td-sec">'+(v.schedule||'<span style="color:#ddd">—</span>')+'</td>'
+        + '<td class="td-sec">'+(v.languages||'<span style="color:#ddd">—</span>')+'</td>'
+        + '<td class="td-sec" style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(v.notes||'')+'</td>'
+        + '</tr>';
+    }).join('') + '</tbody></table></div>';
 }
 
 function renderKanban(data) {
-  const cols = CATEGORIES.map(cat => {
-    const items = data.filter(v => getCategory(v.job).key === cat.key);
+  var cols = CATEGORIES.map(function(cat) {
+    var items = data.filter(function(v) { return getCategory(v.job).key === cat.key; });
     if (!items.length) return '';
-    return `<div class="kanban-col">
-      <div class="kanban-col-header">
-        <span class="kanban-col-dot" style="background:${cat.dot}"></span>
-        <span class="kanban-col-title">${cat.label}</span>
-        <span class="kanban-col-count" style="background:${cat.bg};color:${cat.text}">${items.length}</span>
-      </div>
-      ${items.map(v=>`<div class="kanban-card clickable" onclick="openEdit('${v.id}')">
-        <div class="kanban-card-hotel">${v.hotel}</div>
-        <div class="kanban-card-job">${v.job}</div>
-        <div class="kanban-card-footer">
-          <span class="kanban-rate">${v.rate?v.rate+' ₪':''}</span>
-          <span class="kanban-schedule">${v.schedule||''}</span>
-        </div>
-        ${v.notes?`<div style="font-size:11px;color:#aaa;margin-top:6px;border-top:1px solid #f0eeeb;padding-top:6px">${v.notes}</div>`:''}
-      </div>`).join('')}
-    </div>`;
+    return '<div class="kanban-col">'
+      + '<div class="kanban-col-header">'
+      + '<span class="kanban-col-dot" style="background:'+cat.dot+'"></span>'
+      + '<span class="kanban-col-title">'+cat.label+'</span>'
+      + '<span class="kanban-col-count" style="background:'+cat.bg+';color:'+cat.text+'">'+items.length+'</span>'
+      + '</div>'
+      + items.map(function(v) {
+          return '<div class="kanban-card" onclick="openEdit(\''+v.id+'\')">'
+            + '<div class="kanban-card-hotel">'+v.hotel+'</div>'
+            + '<div class="kanban-card-job">'+v.job+'</div>'
+            + '<div class="kanban-card-footer">'
+            + '<span class="kanban-rate">'+(v.rate ? v.rate+' ₪' : '')+'</span>'
+            + '<span class="kanban-schedule">'+(v.schedule||'')+'</span>'
+            + '</div>'
+            + (v.notes ? '<div style="font-size:11px;color:#aaa;margin-top:6px;border-top:1px solid #f0eeeb;padding-top:6px">'+v.notes+'</div>' : '')
+            + '</div>';
+        }).join('')
+      + '</div>';
   }).filter(Boolean).join('');
-  return `<div class="kanban-wrap"><div class="kanban">${cols||'<div style="color:#ccc;padding:40px">Вакансии не найдены</div>'}</div></div>`;
+  return '<div class="kanban-wrap"><div class="kanban">'+(cols||'<div style="color:#ccc;padding:40px">Вакансии не найдены</div>')+'</div></div>';
 }
 
 function setView(v) {
   currentView = v;
-  document.getElementById('tab-table').className  = 'tab-btn'+(v==='table'?' active':'');
-  document.getElementById('tab-kanban').className = 'tab-btn'+(v==='kanban'?' active':'');
+  document.getElementById('tab-table').className  = 'tab-btn' + (v==='table'  ? ' active' : '');
+  document.getElementById('tab-kanban').className = 'tab-btn' + (v==='kanban' ? ' active' : '');
   render();
 }
 
 function render() {
   renderStats();
   updateDropdowns();
-  const el = document.getElementById('content');
-  if (el) el.innerHTML = currentView==='table' ? renderTable(getFiltered()) : renderKanban(getFiltered());
+  var data = getFiltered();
+  document.getElementById('content').innerHTML = currentView === 'table' ? renderTable(data) : renderKanban(data);
 }
 
-// ─── EDIT MODAL (admin only) ──────────────────────────────────
+// ── FORM HELPERS ─────────────────────────────────────────────
+function onScheduleChange() {
+  var sel = document.getElementById('f-schedule');
+  var custom = document.getElementById('f-schedule-custom');
+  custom.style.display = sel.value === 'другое' ? 'block' : 'none';
+  if (sel.value === 'другое') custom.focus();
+}
+
+function getScheduleValue() {
+  var sel = document.getElementById('f-schedule');
+  if (sel.value === 'другое') return document.getElementById('f-schedule-custom').value.trim();
+  return sel.value;
+}
+
+function setScheduleValue(val) {
+  var known = ['', 'с 07:00 до 15:00', 'с 07:00 до 16:00', 'с 15:00 до 23:00'];
+  var sel = document.getElementById('f-schedule');
+  var custom = document.getElementById('f-schedule-custom');
+  if (known.indexOf(val) !== -1) {
+    sel.value = val;
+    custom.style.display = 'none';
+  } else {
+    sel.value = 'другое';
+    custom.value = val || '';
+    custom.style.display = val ? 'block' : 'none';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('lang-options').addEventListener('click', function(e) {
+    var opt = e.target.closest('.lang-option');
+    if (!opt) return;
+    document.querySelectorAll('.lang-option').forEach(function(el) { el.classList.remove('selected'); });
+    opt.classList.add('selected');
+  });
+  document.getElementById('f-announcement').addEventListener('input', function() {
+    document.getElementById('announcement-counter').textContent = this.value.length + ' символов';
+  });
+});
+
+function getLangValue() {
+  var sel = document.querySelector('.lang-option.selected');
+  return sel ? sel.dataset.val : '';
+}
+
+function setLangValue(val) {
+  document.querySelectorAll('.lang-option').forEach(function(el) {
+    el.classList.toggle('selected', el.dataset.val === (val || ''));
+  });
+}
+
+// ── MODAL ────────────────────────────────────────────────────
 function openAdd() {
   editingId = null;
   document.getElementById('edit-modal-title').textContent = 'Новая вакансия';
   document.getElementById('modal-save-btn').textContent = 'Добавить';
   document.getElementById('modal-delete-btn').innerHTML = '';
-  ['f-hotel','f-job','f-rate','f-notes','f-announcement'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-hotel').value = '';
+  document.getElementById('f-job').value = '';
+  document.getElementById('f-rate').value = '';
+  document.getElementById('f-notes').value = '';
+  document.getElementById('f-announcement').value = '';
   document.getElementById('announcement-counter').textContent = '0 символов';
   setScheduleValue('');
-  setLanguagesValue('');
+  setLangValue('');
   document.getElementById('edit-modal').classList.remove('hidden');
-  setTimeout(() => document.getElementById('f-hotel').focus(), 50);
+  setTimeout(function() { document.getElementById('f-hotel').focus(); }, 50);
 }
 
 function openEdit(id) {
-  if (!isAdmin) return;
-  const v = vacancies.find(x => x.id === id); if (!v) return;
+  var v = vacancies.find(function(x) { return x.id === id; });
+  if (!v) return;
   editingId = id;
   document.getElementById('edit-modal-title').textContent = 'Редактировать';
   document.getElementById('modal-save-btn').textContent = 'Сохранить';
-  document.getElementById('modal-delete-btn').innerHTML = `<button class="btn-danger" onclick="deleteVacancy('${id}')">Удалить</button>`;
-  document.getElementById('f-hotel').value        = v.hotel||'';
-  document.getElementById('f-job').value          = v.job||'';
-  document.getElementById('f-rate').value         = v.rate||'';
-  document.getElementById('f-notes').value        = v.notes||'';
-  document.getElementById('f-announcement').value = v.announcement||'';
-  const cnt = (v.announcement||'').length;
-  document.getElementById('announcement-counter').textContent = cnt + ' символов';
-  setScheduleValue(v.schedule||'');
-  setLanguagesValue(v.languages||'');
+  document.getElementById('modal-delete-btn').innerHTML = '<button class="btn-danger" onclick="deleteVacancy(\''+id+'\')">Удалить</button>';
+  document.getElementById('f-hotel').value = v.hotel || '';
+  document.getElementById('f-job').value   = v.job   || '';
+  document.getElementById('f-rate').value  = v.rate  || '';
+  document.getElementById('f-notes').value = v.notes || '';
+  document.getElementById('f-announcement').value = v.announcement || '';
+  document.getElementById('announcement-counter').textContent = (v.announcement||'').length + ' символов';
+  setScheduleValue(v.schedule || '');
+  setLangValue(v.languages || '');
   document.getElementById('edit-modal').classList.remove('hidden');
 }
 
 function closeEditModal() { document.getElementById('edit-modal').classList.add('hidden'); }
 function handleEditOverlay(e) { if (e.target === document.getElementById('edit-modal')) closeEditModal(); }
 
-async function saveForm() {
-  const hotel = document.getElementById('f-hotel').value.trim();
-  const job   = document.getElementById('f-job').value.trim();
+function saveForm() {
+  var hotel = document.getElementById('f-hotel').value.trim();
+  var job   = document.getElementById('f-job').value.trim();
   if (!hotel || !job) { alert('Заполни название отеля и должность'); return; }
-  const v = { hotel, job,
+  var v = {
+    hotel:        hotel,
+    job:          job,
     rate:         document.getElementById('f-rate').value.trim(),
     schedule:     getScheduleValue(),
-    languages:    getLanguagesValue(),
+    languages:    getLangValue(),
     notes:        document.getElementById('f-notes').value.trim(),
     announcement: document.getElementById('f-announcement').value.trim(),
   };
-  const btn = document.getElementById('modal-save-btn');
-  btn.disabled = true; btn.textContent = '…';
-  try {
-    if (editingId === null) await addVacancy(v);
-    else await updateVacancy(editingId, v);
+  var btn = document.getElementById('modal-save-btn');
+  btn.disabled = true;
+  btn.textContent = '…';
+  var promise = editingId === null ? addVacancy(v) : updateVacancy(editingId, v);
+  promise.then(function() {
     closeEditModal();
-  } catch(e) { alert('Ошибка: ' + e.message); }
-  finally { btn.disabled = false; }
+  }).catch(function(e) {
+    alert('Ошибка: ' + e.message);
+  }).finally(function() {
+    btn.disabled = false;
+    btn.textContent = editingId ? 'Сохранить' : 'Добавить';
+  });
 }
 
-async function deleteVacancy(id) {
+function deleteVacancy(id) {
   closeEditModal();
-  await deleteVacancyById(id);
+  deleteVacancyById(id);
 }
 </script>
 </body>
