@@ -227,16 +227,14 @@ service cloud.firestore {
           <span class="lang-option" data-val="">— Без языков</span>
         </div>
       </div>
-      <div class="form-row-2">
-        <div>
-          <label class="form-label">Заметки</label>
-          <textarea class="form-input" id="f-notes" rows="5" style="resize:vertical"></textarea>
-        </div>
-        <div>
-          <label class="form-label">Объявление <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#bbb;font-size:11px">для соцсетей</span></label>
-          <textarea class="form-input" id="f-announcement" rows="5" placeholder="Текст объявления для Facebook…" style="resize:vertical"></textarea>
-          <div style="text-align:right;font-size:11px;color:#ccc;margin-top:4px" id="announcement-counter">0 символов</div>
-        </div>
+      <div>
+        <label class="form-label">Заметки</label>
+        <textarea class="form-input" id="f-notes" rows="3" style="resize:vertical"></textarea>
+      </div>
+      <div>
+        <label class="form-label">Объявление <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#bbb;font-size:11px">для соцсетей</span></label>
+        <textarea class="form-input" id="f-announcement" rows="5" placeholder="Текст объявления для Facebook…" style="resize:vertical"></textarea>
+        <div style="text-align:right;font-size:11px;color:#ccc;margin-top:4px" id="announcement-counter">0 символов</div>
       </div>
     </div>
     <div class="modal-footer">
@@ -470,18 +468,64 @@ function renderStats() {
 function renderTable(data) {
   if (!data.length) return '<div class="table-wrap"><div class="no-results">Вакансии не найдены</div></div>';
   return '<div class="table-wrap"><table>'
-    + '<thead><tr><th>Отель</th><th>Должность</th><th>Ставка/час</th><th>График</th><th>Языки</th><th>Заметки</th></tr></thead>'
+    + '<thead><tr><th>Отель</th><th>Должность</th><th>Ставка/час</th><th>График</th><th>Языки</th><th>Заметки</th><th>Объявление</th></tr></thead>'
     + '<tbody>' + data.map(function(v) {
       var cat = getCategory(v.job);
+      var ann = v.announcement || '';
+      var annCell = ann
+        ? '<div style="display:flex;align-items:center;gap:6px">'
+          + '<span class="ann-preview" id="ann-'+v.id+'" style="font-size:12px;color:#555;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer" title="Нажми чтобы раскрыть" onclick="toggleAnn(\''+v.id+'\')">'
+          + escHtml(ann)
+          + '</span>'
+          + '<button onclick="copyAnn(\''+v.id+'\',event)" style="flex-shrink:0;background:#f0eeeb;border:none;border-radius:6px;padding:3px 8px;font-size:11px;cursor:pointer;color:#555" title="Скопировать">📋</button>'
+          + '</div>'
+        : '<span style="color:#ddd">—</span>';
       return '<tr onclick="openEdit(\''+v.id+'\')" style="cursor:pointer">'
-        + '<td class="td-hotel">'+v.hotel+'</td>'
-        + '<td><span class="chip" style="background:'+cat.bg+';color:'+cat.text+'">'+v.job+'</span></td>'
+        + '<td class="td-hotel">'+escHtml(v.hotel)+'</td>'
+        + '<td><span class="chip" style="background:'+cat.bg+';color:'+cat.text+'">'+escHtml(v.job)+'</span></td>'
         + '<td class="td-rate">'+(v.rate ? v.rate+' ₪' : '<span style="color:#ccc">—</span>')+'</td>'
-        + '<td class="td-sec">'+(v.schedule||'<span style="color:#ddd">—</span>')+'</td>'
-        + '<td class="td-sec">'+(v.languages||'<span style="color:#ddd">—</span>')+'</td>'
-        + '<td class="td-sec" style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(v.notes||'')+'</td>'
+        + '<td class="td-sec">'+(v.schedule || '<span style="color:#ddd">—</span>')+'</td>'
+        + '<td class="td-sec">'+(v.languages || '<span style="color:#ddd">—</span>')+'</td>'
+        + '<td class="td-sec" style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(v.notes ? escHtml(v.notes) : '')+'</td>'
+        + '<td onclick="event.stopPropagation()" style="max-width:200px">'+annCell+'</td>'
         + '</tr>';
     }).join('') + '</tbody></table></div>';
+}
+
+var annExpanded = {};
+function toggleAnn(id) {
+  var el = document.getElementById('ann-'+id);
+  if (!el) return;
+  var v = vacancies.find(function(x){ return x.id === id; });
+  if (!v) return;
+  annExpanded[id] = !annExpanded[id];
+  if (annExpanded[id]) {
+    el.style.whiteSpace = 'pre-wrap';
+    el.style.overflow = 'visible';
+    el.style.maxWidth = '280px';
+    el.style.wordBreak = 'break-word';
+    el.textContent = v.announcement;
+  } else {
+    el.style.whiteSpace = 'nowrap';
+    el.style.overflow = 'hidden';
+    el.style.maxWidth = '160px';
+    el.textContent = v.announcement;
+  }
+}
+
+function copyAnn(id, e) {
+  e.stopPropagation();
+  var v = vacancies.find(function(x){ return x.id === id; });
+  if (!v || !v.announcement) return;
+  navigator.clipboard.writeText(v.announcement).then(function() {
+    var btn = e.target;
+    btn.textContent = '✅';
+    setTimeout(function(){ btn.textContent = '📋'; }, 1500);
+  });
+}
+
+function escHtml(str) {
+  return (str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 function renderKanban(data) {
