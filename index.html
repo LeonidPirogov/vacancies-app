@@ -346,14 +346,21 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     // Таймаут 8 секунд — если нет ответа, скорее всего блокируют правила Firestore
     const timeout = setTimeout(() => {
-      setSyncBanner('error', '⚠️ Нет ответа от Firebase — проверь правила Firestore (см. инструкцию ниже)');
+      setSyncBanner('error', '⚠️ Нет ответа от Firebase — обнови страницу или проверь консоль браузера (F12)');
       document.getElementById('firestore-hint').style.display = 'block';
     }, 8000);
 
-    await seedIfEmpty();
-    db.collection('vacancies').onSnapshot(snap => {
+    // Сначала запускаем слушатель, seedIfEmpty вызываем после первого снапшота
+    let seeded = false;
+    db.collection('vacancies').onSnapshot(async snap => {
       clearTimeout(timeout);
       document.getElementById('firestore-hint').style.display = 'none';
+      if (!seeded && snap.empty) {
+        seeded = true;
+        await seedIfEmpty();
+        return;
+      }
+      seeded = true;
       vacancies = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       render();
       setSyncBanner('ok', `Синхронизировано · ${vacancies.length} вакансий`);
