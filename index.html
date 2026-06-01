@@ -105,6 +105,9 @@
   .form-input { width: 100%; padding: 9px 13px; border: 1.5px solid #e0ddd8; border-radius: 9px; font-size: 14px; outline: none; background: #faf9f7; transition: border-color .15s; }
   .form-input:focus { border-color: #1a1a1a; background: #fff; }
   textarea.form-input { resize: vertical; }
+  .lang-option { display:inline-flex; align-items:center; gap:6px; font-size:14px; cursor:pointer; padding:8px 14px; border:1.5px solid #e0ddd8; border-radius:9px; background:#faf9f7; transition:all .15s; user-select:none; }
+  .lang-option:hover { border-color:#aaa; }
+  .lang-option.selected { border-color:#1a1a1a; background:#f0eeeb; font-weight:600; }
   .form-error { color: #c62828; font-size: 13px; margin-top: 4px; }
 
   .no-results { padding: 40px; text-align: center; color: #bbb; font-size: 14px; }
@@ -193,16 +196,35 @@
         </div>
         <div>
           <label class="form-label">График</label>
-          <input class="form-input" id="f-schedule" placeholder="утро, сменный">
+          <select class="form-input" id="f-schedule" onchange="onScheduleChange()">
+            <option value="">— не указан —</option>
+            <option value="с 07:00 до 15:00">с 07:00 до 15:00</option>
+            <option value="с 07:00 до 16:00">с 07:00 до 16:00</option>
+            <option value="с 15:00 до 23:00">с 15:00 до 23:00</option>
+            <option value="другое">Другое…</option>
+          </select>
+          <input class="form-input" id="f-schedule-custom" placeholder="Укажи свой график" style="margin-top:8px;display:none">
         </div>
       </div>
       <div>
         <label class="form-label">Языки</label>
-        <input class="form-input" id="f-languages" placeholder="Иврит, русский, английский">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px" id="lang-options">
+          <label class="lang-option" data-val="Иврит">🇮🇱 Иврит</label>
+          <label class="lang-option" data-val="Английский">🇬🇧 Английский</label>
+          <label class="lang-option" data-val="Иврит и Английский">🇮🇱🇬🇧 Иврит и Английский</label>
+          <label class="lang-option" data-val="">— Без языков</label>
+        </div>
       </div>
-      <div>
-        <label class="form-label">Заметки</label>
-        <textarea class="form-input" id="f-notes" rows="3"></textarea>
+      <div class="form-row-2">
+        <div>
+          <label class="form-label">Заметки</label>
+          <textarea class="form-input" id="f-notes" rows="6" style="resize:vertical"></textarea>
+        </div>
+        <div>
+          <label class="form-label">Объявление <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#bbb;font-size:11px">для соцсетей</span></label>
+          <textarea class="form-input" id="f-announcement" rows="6" placeholder="Текст объявления для Facebook или другой соцсети…" style="resize:vertical;white-space:pre-wrap;word-break:break-word"></textarea>
+          <div style="text-align:right;font-size:11px;color:#ccc;margin-top:4px" id="announcement-counter">0 символов</div>
+        </div>
       </div>
     </div>
     <div class="modal-footer">
@@ -356,7 +378,79 @@ function openLogin() {
 }
 function closeLogin() { document.getElementById('login-modal').classList.add('hidden'); }
 
-function doLogin() {
+// Init lang option clicks
+document.getElementById('lang-options').addEventListener('click', e => {
+  const opt = e.target.closest('.lang-option');
+  if (!opt) return;
+  document.querySelectorAll('.lang-option').forEach(el => el.classList.remove('selected'));
+  opt.classList.add('selected');
+});
+
+function getLanguagesValue() {
+  const sel = document.querySelector('.lang-option.selected');
+  return sel ? sel.dataset.val : '';
+}
+
+function setLanguagesValue(val) {
+  document.querySelectorAll('.lang-option').forEach(el => {
+    el.classList.toggle('selected', el.dataset.val === (val||''));
+  });
+}
+
+// Announcement character counter
+document.getElementById('f-announcement').addEventListener('input', function() {
+  document.getElementById('announcement-counter').textContent = this.value.length + ' символов';
+});
+
+function onScheduleChange() {
+  const sel = document.getElementById('f-schedule');
+  const custom = document.getElementById('f-schedule-custom');
+  custom.style.display = sel.value === 'другое' ? 'block' : 'none';
+  if (sel.value === 'другое') custom.focus();
+}
+
+function updateLangLabel(code) {
+  const checked = document.getElementById('lang-'+code).checked;
+  const lbl = document.getElementById('lang-'+code+'-lbl');
+  lbl.style.borderColor = checked ? '#1a1a1a' : '#e0ddd8';
+  lbl.style.background  = checked ? '#f0eeeb' : '#faf9f7';
+  lbl.style.fontWeight  = checked ? '600' : 'normal';
+}
+
+function getLanguagesValue() {
+  return ['he','ru','en']
+    .filter(c => document.getElementById('lang-'+c).checked)
+    .map(c => document.getElementById('lang-'+c).value)
+    .join(', ');
+}
+
+function setLanguagesValue(val) {
+  ['he','ru','en'].forEach(c => {
+    const cb = document.getElementById('lang-'+c);
+    cb.checked = val ? val.includes(cb.value) : false;
+    updateLangLabel(c);
+  });
+}
+
+function getScheduleValue() {
+  const sel = document.getElementById('f-schedule');
+  if (sel.value === 'другое') return document.getElementById('f-schedule-custom').value.trim();
+  return sel.value;
+}
+
+function setScheduleValue(val) {
+  const sel = document.getElementById('f-schedule');
+  const custom = document.getElementById('f-schedule-custom');
+  const known = ['', 'с 07:00 до 15:00', 'с 07:00 до 16:00', 'с 15:00 до 23:00'];
+  if (known.includes(val)) {
+    sel.value = val;
+    custom.style.display = 'none';
+  } else {
+    sel.value = 'другое';
+    custom.value = val;
+    custom.style.display = 'block';
+  }
+}
   const u = document.getElementById('l-user').value.trim();
   const p = document.getElementById('l-pass').value;
   if (u === ADMIN_USER && p === ADMIN_PASS) {
@@ -486,7 +580,10 @@ function openAdd() {
   document.getElementById('edit-modal-title').textContent = 'Новая вакансия';
   document.getElementById('modal-save-btn').textContent = 'Добавить';
   document.getElementById('modal-delete-btn').innerHTML = '';
-  ['f-hotel','f-job','f-rate','f-schedule','f-languages','f-notes'].forEach(id => document.getElementById(id).value = '');
+  ['f-hotel','f-job','f-rate','f-notes','f-announcement'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('announcement-counter').textContent = '0 символов';
+  setScheduleValue('');
+  setLanguagesValue('');
   document.getElementById('edit-modal').classList.remove('hidden');
   setTimeout(() => document.getElementById('f-hotel').focus(), 50);
 }
@@ -498,12 +595,15 @@ function openEdit(id) {
   document.getElementById('edit-modal-title').textContent = 'Редактировать';
   document.getElementById('modal-save-btn').textContent = 'Сохранить';
   document.getElementById('modal-delete-btn').innerHTML = `<button class="btn-danger" onclick="deleteVacancy('${id}')">Удалить</button>`;
-  document.getElementById('f-hotel').value     = v.hotel||'';
-  document.getElementById('f-job').value       = v.job||'';
-  document.getElementById('f-rate').value      = v.rate||'';
-  document.getElementById('f-schedule').value  = v.schedule||'';
-  document.getElementById('f-languages').value = v.languages||'';
-  document.getElementById('f-notes').value     = v.notes||'';
+  document.getElementById('f-hotel').value        = v.hotel||'';
+  document.getElementById('f-job').value          = v.job||'';
+  document.getElementById('f-rate').value         = v.rate||'';
+  document.getElementById('f-notes').value        = v.notes||'';
+  document.getElementById('f-announcement').value = v.announcement||'';
+  const cnt = (v.announcement||'').length;
+  document.getElementById('announcement-counter').textContent = cnt + ' символов';
+  setScheduleValue(v.schedule||'');
+  setLanguagesValue(v.languages||'');
   document.getElementById('edit-modal').classList.remove('hidden');
 }
 
@@ -515,10 +615,11 @@ async function saveForm() {
   const job   = document.getElementById('f-job').value.trim();
   if (!hotel || !job) { alert('Заполни название отеля и должность'); return; }
   const v = { hotel, job,
-    rate:      document.getElementById('f-rate').value.trim(),
-    schedule:  document.getElementById('f-schedule').value.trim(),
-    languages: document.getElementById('f-languages').value.trim(),
-    notes:     document.getElementById('f-notes').value.trim(),
+    rate:         document.getElementById('f-rate').value.trim(),
+    schedule:     getScheduleValue(),
+    languages:    getLanguagesValue(),
+    notes:        document.getElementById('f-notes').value.trim(),
+    announcement: document.getElementById('f-announcement').value.trim(),
   };
   const btn = document.getElementById('modal-save-btn');
   btn.disabled = true; btn.textContent = '…';
